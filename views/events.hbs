@@ -1,0 +1,10 @@
+
+<div id="eventsContainer">
+    <ul>
+        {{#each events}}
+        <li>{{this.name}} @ {{this.venue}}</li>
+        <p>{{this.description}}</p>
+        <p>{{this.eventStart}} - {{this.eventEnd}}</p>
+        {{/each}}
+    </ul>
+</div>

@@ -4,11 +4,22 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+// load environment variables
+var dotenv = require('dotenv');
+var result = dotenv.config({ path: './credentials-development.env'});
+console.log("ENV: " + process.env.NODE_ENV);
+if(result.error) {
+  console.log('ERROR HAS OCCURED WHILE LOADING ENVIRONMENT VARIABLES');
+} else {
+  console.error('Environment configuration loaded successfully!');
+}
+
+require('./db');
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-
 var attendanceRouter = require('./routes/attendance');
-
+var eventRouter = require('./routes/event')
 var app = express();
 
 // view engine setup
@@ -26,7 +37,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/attendance', attendanceRouter);
-
+app.use('/events', eventRouter)
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
