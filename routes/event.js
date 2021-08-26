@@ -9,6 +9,8 @@ router.get('/:slug', eventHandler.GET_event);
 // Event form page
 router.get('/create', eventHandler.GET_eventForm);
 router.post('/api/create-event-process',  eventHandler.api.POST_eventForm);
-
+router.get('/api/events', eventHandler.api.GET_events);
+router.put('/api/events/:id', eventHandler.api.PUT_eventForm);
+router.delete('/api/events/:id', eventHandler.api.DELETE_event);
 
 module.exports = router;
