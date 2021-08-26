@@ -2,7 +2,8 @@
 <div id="eventsContainer">
     <ul>
         {{#each events}}
-        <li>{{this.name}} @ {{this.venue}}</li>
+        <li><a href="/events/{{this.slug}}">{{this.name}}</a></li>
+        <p>@{{this.venue}}</p>
         <p>{{this.description}}</p>
         <p>{{this.eventStart}} - {{this.eventEnd}}</p>
         {{/each}}
