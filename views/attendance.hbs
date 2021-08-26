@@ -1,0 +1,41 @@
+
+<div id="formContainer">
+    <form method="POST" id="attendanceForm">
+
+        <input type="hidden" name="_csrf" value="{{csrf}}">
+
+        <div>
+            <label for="fieldFullName">Fullname </label>
+            <input type="text" id="fieldFullName" name="fullName">
+        </div>
+
+        <div>
+            <label for="fieldAge">Age </label>
+            <input type="text" id="fieldAge" name="age">
+        </div>
+
+        <div>
+            <label for="fieldProfessionalStatus">Professional status </label>
+            <input type="text" id="fieldProfessionalStatus" name="professionalStatus">
+        </div>
+
+        <div>
+            <label for="fieldInstitution">Institution </label>
+            <input type="text" id="fieldInstitution" name="institution">
+        </div>
+            
+        <div>
+            <label for="fieldCourse">Course </label>
+            <input type="text" id="fieldCourse" name="course">
+        </div>
+
+        <div id="resultContainer"></div>
+        <div>
+            <button type="submit">Submit</button>
+        </div>
+
+    </form>
+</div>
+
+
+<script src="/javascripts/attendance.js"></script>
