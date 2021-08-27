@@ -16,10 +16,14 @@ if(result.error) {
 
 require('./db');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var attendanceRouter = require('./routes/attendance');
-var eventRouter = require('./routes/event')
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
+const attendanceRouter = require('./routes/attendance');
+const eventRouter = require('./routes/event')
+
+const eventRouterAPI = require('./routes/api/event');
+const attendanceRouterAPI = require('./routes/api/attendance');
+
 var app = express();
 
 // view engine setup
@@ -38,6 +42,8 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/attendance', attendanceRouter);
 app.use('/events', eventRouter);
+app.use('/api/events', eventRouterAPI);
+app.use('/api/attendances', attendanceRouterAPI);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
