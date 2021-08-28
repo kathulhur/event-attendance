@@ -18,11 +18,11 @@ require('./db');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
-const attendanceRouter = require('./routes/attendance');
+const participantRouter = require('./routes/participant');
 const eventRouter = require('./routes/event')
 
 const eventRouterAPI = require('./routes/api/event');
-const attendanceRouterAPI = require('./routes/api/attendance');
+const participantRouterAPI = require('./routes/api/participant');
 
 var app = express();
 
@@ -40,10 +40,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/attendance', attendanceRouter);
+app.use('/attendance', participantRouter);
 app.use('/events', eventRouter);
 app.use('/api/events', eventRouterAPI);
-app.use('/api/attendances', attendanceRouterAPI);
+app.use('/api/events', participantRouterAPI);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
