@@ -4,16 +4,10 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-// load environment variables
-var dotenv = require('dotenv');
-var result = dotenv.config({ path: './credentials-development.env'});
-console.log("ENV: " + process.env.NODE_ENV);
-if(result.error) {
-  console.log('ERROR HAS OCCURED WHILE LOADING ENVIRONMENT VARIABLES');
-} else {
-  console.error('Environment configuration loaded successfully!');
-}
+const {credentials} = require('./config');
 
+process.env.DEBUG = credentials.DEBUG;
+process.env.MONGODB_URI = credentials.MONGODB_URI;
 require('./db');
 
 const indexRouter = require('./routes/index');

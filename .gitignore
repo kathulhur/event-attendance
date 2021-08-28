@@ -61,4 +61,4 @@ typings/
 .next
 
 # private credentials
-*.env
+.credentials.*
