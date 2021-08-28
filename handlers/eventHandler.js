@@ -1,43 +1,32 @@
 const mongoose = require('mongoose');
 const EventModel = require('../models/eventModel');
 const util = require('../utils/util');
+const modelUtil = require('../utils/modelUtil');
 
 exports.GET_events = async function(req, res) {
     let results = await EventModel.find().exec();
-    let events = results.map(result => ({
-            name: result.name,
-            slug: result.slug,
-            description: result.description,
-            venue: result.venue,
-            eventStart: 
-                result.eventStart.toLocaleString(),
-            eventEnd: 
-                result.eventEnd.toLocaleString(),
-        }));
-
-    console.log(events);
-
-    res.render('events', {events: events, csrf: 'CSRF token goes here'});
+    res.render('events', {events: modelUtil.event.filterEvents(results), csrf: 'CSRF token goes here'});
 }
 
 exports.GET_event = async function(req, res, next) {
+    let eventId;
+    try{// check if the ID is valid
+        eventId = mongoose.Types.ObjectId(req.params.eventId);
+    } catch (err) {
+        console.log("Error: " + err);
+        res.status(400).send('GET: invalid id');
+    }
+
     try{
-        let result = await EventModel.find({slug: req.params.slug}).exec();
-        if(result && result.length === 1){
-            let event = {
-                name: result[0].name,
-                slug: result[0].slug,
-                code: result[0].code,
-                description: result[0].description,
-                eventStart: result[0].eventStart.toLocaleString(),
-                eventEnd: result[0].eventEnd.toLocaleString()
-            }
-            res.render('event', {event: event, csrf: 'CSRF token goes here'});
+        let result = await EventModel.findById(eventId).exec();
+        if(result){
+            res.render('event', {event: modelUtil.event.filterEvent(result), csrf: 'CSRF token goes here'});
         } else {
-            throw new Error('Error: Multiple result returned');
+            next();
         }
     } catch (err) {
-        if (err) next(err);
+        console.log("Error: " + err);
+        next(err);
     }
     
 }

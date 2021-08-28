@@ -1,0 +1,10 @@
+
+<div id="participantsContainer">
+    <a href="/events/{{event.id}}">{{event.name}}</a>
+    <ul>
+        {{#each participants}}
+        
+        <li><a href="/events/{{../event.id}}/participants/{{this.id}}">{{this.name}} - {{../event.id}}</a></li>
+        {{/each}}
+    </ul>
+</div>

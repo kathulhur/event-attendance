@@ -1,8 +1,7 @@
 const ParticipantModel = require('../../models/participantModel');
 const EventModel = require('../../models/eventModel');
 const mongoose = require('mongoose');
-const { json } = require('express');
-
+const modelUtil = require('../../utils/modelUtil');
 
 exports.api = {
     GET_participants: async function (req, res) {
@@ -11,7 +10,7 @@ exports.api = {
             if (results.length == 0) {// if no data
                 res.json({ msg: "GET: No available data."});
             } else if (results) {// if there are result
-                let participants = filterParticipants(results);
+                let participants = modelUtil.participant.filterParticipants(results);
                 res.json(participants);
             } else {// results return null (or something that evaluates to false);
                 res.status(500).json({ msg: "GET: FIX THIS!"});
@@ -33,7 +32,7 @@ exports.api = {
         try {// fetch the participants data
             let results = await ParticipantModel.find({ event: eventId }).exec();
             if(results.length != 0) {
-                res.json(filterParticipants(results));
+                res.json(modelUtil.participant.filterParticipants(results));
             } else {
                 res.status(404).json({ msg: "GET: No participants found."});
             }
@@ -49,6 +48,7 @@ exports.api = {
 
         try {// check if the id is valid
             eventId = mongoose.Types.ObjectId(req.params.eventId);
+            req.body.eventId = eventId;// add the object id to the body for the filter
         } catch(err) {// invalid id
             console.error(err);
             res.status(400).json({ msg: "POST: Invalid event ID"});
@@ -58,13 +58,13 @@ exports.api = {
             let event = await EventModel.findById(eventId).exec();
 
             if(event){// if event found, create the save the participant
-                let participant = createParticipant(req.body);
+                let participant = modelUtil.participant.createParticipant(req.body);
                 participant.save(function (err) {
                     if(err){// error saving
                         console.log("Error: " + err);
                         res.status(500).send({result: "POST: Failed saving participant data."});
                     } else {// saving success
-                        res.json(filterParticipant(participant));
+                        res.json(modelUtil.participant.filterParticipant(participant));
                     }
                 }); 
             } else { //otherwise, return event not found
@@ -120,7 +120,7 @@ exports.api = {
                 { new: true});
 
             if(updatedParticipant) { // updated
-                res.json(filterParticipant(updatedParticipant));
+                res.json(modelUtil.participant.filterParticipant(updatedParticipant));
             } else { // participant not found
                 res.status(404).json({ msg: "PUT: Participant not found."});
             }
@@ -133,27 +133,3 @@ exports.api = {
 
 
 
-function createParticipant(body) {
-    return new ParticipantModel({
-        event: mongoose.Types.ObjectId(body.eventId),
-        name: body.name,
-    });
-}
-
-function filterParticipant(participant) {
-    let filteredResult = {
-        id: participant._id,
-        event: participant.event,
-        name: participant.name,
-    }
-    return filteredResult;
-}
-
-function filterParticipants(participants) {
-    return participants.map(filterParticipant);
-}
-
-function modifyParticipants(participant, body) {
-    participant.name = body.name ? body.name: participant.name;
-    return participant;
-}

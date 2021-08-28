@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const EventModel = require('../../models/eventModel');
 const util = require('../../utils/util');
+const modelUtil = require('../../utils/modelUtil');
 
 exports.api = {
     GET_events: async function (req, res) {
@@ -9,8 +10,7 @@ exports.api = {
             if (results.length == 0) {
                 res.json({ msg: "GET: Empty data."});
             }else if (results) {// if there are results, filter the data to be passed
-                let events = filterEvents(results);
-                res.json(events);// return the filtered result
+                res.json(modelUtil.event.filterEvents(results));// return the filtered result
 
             } else {
                 res.json({ msg: "GET: Something went wrong"});// No data in the database
@@ -31,8 +31,9 @@ exports.api = {
 
         try {
             let result = await EventModel.findById(eventId).exec();// get all the event records
+
             if(result) {// if there are results, filter the data to be passed
-                let event = filterEvent(result);
+                let event = modelUtil.event.filterEvent(result);
                 res.json(event);// return the filtered result
             } else {
                 res.status(404).json({ msg: "GET: Data not found."});// No data in the database
@@ -44,10 +45,10 @@ exports.api = {
 
     POST_eventForm: async function (req, res) {
         try {
-            let event = createEvent(req.body)
+            let event = modelUtil.event.createEvent(req.body)
 
             event = await event.save();
-            res.json(filterEvent(event));
+            res.json(modelUtil.event.filterEvent(event));
 
         } catch (err) {
             console.log("Error: " + err);
@@ -68,11 +69,11 @@ exports.api = {
             let event = await EventModel.findOne({ _id: eventId}).exec();
 
             if(event) {
-                modifyEvent(event, req.body);
+                modelUtil.event.modifyEvent(event, req.body);
 
                 event.save()
                 .then( savedDoc => {
-                    res.json(filterEvent(savedDoc));
+                    res.json(modelUtil.event.filterEvent(savedDoc));
                 })
                 .catch( err => {
                     console.log("Error: " + err);
@@ -109,28 +110,5 @@ exports.api = {
 
 
 
-function filterEvents(events) {
-    let filteredEvents = events.map(filterEvent);
-    
-    return filteredEvents;
-}
 
-function filterEvent(event) {
-    let result = {
-        id: event._id,
-        name: event.name,
-    }
-    return result;
-}
-
-function modifyEvent(event, body) {   
-    event.name = body.name ? body.name: event.name;
-    return event;
-}
-
-function createEvent(body) {
-    return new EventModel({
-        name: body.name,
-    });
-}
 

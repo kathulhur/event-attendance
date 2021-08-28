@@ -8,7 +8,7 @@ const {credentials} = require('./config');
 
 process.env.DEBUG = credentials.DEBUG;
 process.env.MONGODB_URI = credentials.MONGODB_URI;
-require('./db');
+require('./db');// setup the database
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
@@ -34,8 +34,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/attendance', participantRouter);
 app.use('/events', eventRouter);
+app.use('/events', participantRouter)
 app.use('/api/events', eventRouterAPI);
 app.use('/api/events', participantRouterAPI);
 
