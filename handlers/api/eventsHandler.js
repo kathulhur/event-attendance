@@ -45,11 +45,12 @@ exports.api = {
 
     POST_eventForm: async function (req, res) {
         try {
+            console.log('before')
             let event = modelUtil.event.createEvent(req.body)
 
             event = await event.save();
             res.json(modelUtil.event.filterEvent(event));
-
+            console.log('after');
         } catch (err) {
             console.log("Error: " + err);
             res.status(500).json({ msg: "POST: Error saving data."});
@@ -58,15 +59,16 @@ exports.api = {
     },
 
     PUT_eventForm: async function (req, res) {
-        try {
-            let eventId;
+        let eventId;
 
-            try {
-                eventId = mongoose.Types.ObjectId(req.params.eventId);
-            } catch {
-                res.status(400).send({ msg: "Invalid ID"})
-            }
-            let event = await EventModel.findOne({ _id: eventId}).exec();
+        try {// check if the id is valid
+            eventId = mongoose.Types.ObjectId(req.params.eventId);
+        } catch {
+            res.status(400).send({ msg: "Invalid ID"});
+        }
+
+        try {//
+            let event = await EventModel.findById(eventId).exec();
 
             if(event) {
                 modelUtil.event.modifyEvent(event, req.body);
@@ -80,7 +82,7 @@ exports.api = {
                     res.status(400).json( {msg: "PUT: Error update request."});
                 });
             } else {
-                res.status(404).json( {msg: "PUT: No record match."});
+                res.status(404).json({msg: "PUT: No record match."});
             }
            
         } catch (err) {
@@ -99,8 +101,12 @@ exports.api = {
         }
 
         try {
-            await EventModel.deleteOne({_id: eventId}).exec();
-            res.json({ msg: "DELETE: Success" });
+            let event = await EventModel.findByIdAndDelete({_id: eventId}).exec();
+            if(event) {
+                res.json({ msg: "DELETE: Success" });
+            } else {
+                res.status(404).json({msg: "Event not found."});
+            }
         } catch (err) {
             console.log("Error: " + err);
             res.status(500).json({ msg: "DELETE: Deletion failed."});

@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var exphbs  = require('express-handlebars');
 
 const {credentials} = require('./config');
 
@@ -12,17 +13,18 @@ require('./db');// setup the database
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
-const participantRouter = require('./routes/participant');
-const eventRouter = require('./routes/event')
+const participantsRouter = require('./routes/participants');
+const eventsRouter = require('./routes/events')
 
-const eventRouterAPI = require('./routes/api/event');
-const participantRouterAPI = require('./routes/api/participant');
+const eventsRouterAPI = require('./routes/api/events');
+const participantsRouterAPI = require('./routes/api/participants');
 
 var app = express();
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'hbs');
+app.engine('.hbs', exphbs({ extname: '.hbs'}));
+app.set('view engine', '.hbs');
+
 
 
 app.use(logger('dev'));
@@ -34,10 +36,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/events', eventRouter);
-app.use('/events', participantRouter)
-app.use('/api/events', eventRouterAPI);
-app.use('/api/events', participantRouterAPI);
+app.use('/events', eventsRouter);
+app.use('/events', participantsRouter)
+app.use('/api/events', eventsRouterAPI);
+app.use('/api/events', participantsRouterAPI);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

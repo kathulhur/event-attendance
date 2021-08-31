@@ -4,7 +4,6 @@ const EventModel = require('../models/eventModel');
 const modelUtil = require('../utils/modelUtil');
 
 exports.GET_participants = async function (req, res) {
-    console.log('GET_participants');
     let eventId;
     try{// check if the eventId is valid
         eventId = mongoose.Types.ObjectId(req.params.eventId);
@@ -16,13 +15,11 @@ exports.GET_participants = async function (req, res) {
     try {
         let event = await EventModel.findById(eventId).exec();
         let results = await ParticipantModel.find({ event: eventId }).exec();
-        console.log(results);
         if(results.length == 0) {
 
             res.json({ msg: "GET: Empty data"});
             
         } else if (results) {
-            console.log(results);
             res.render('participants', 
             {
                 event: modelUtil.event.filterEvent(event),
@@ -52,7 +49,6 @@ exports.GET_participant = async function (req, res) {
 
     try { // fetch the participant
         let participant = await ParticipantModel.findOne({ _id: participantId, event: eventId }).exec();
-        console.log(participant);
         if(participant) {
             res.render('participant', { participant: modelUtil.participant.filterParticipant(participant)});
         } else {
@@ -61,5 +57,56 @@ exports.GET_participant = async function (req, res) {
     } catch (err) {
         console.error('Error: ' + err);
         res.status(500).json({ msg: "GET: Error fetching data."});
+    }
+}
+
+exports.GET_participantForm = async function(req, res, next) {
+    let eventId;
+    try{// checks if the id is valid
+        eventId = mongoose.Types.ObjectId(req.params.eventId);
+    } catch(err){
+        console.log("Error: Invalid id - " + err);
+        next(err);
+        return;
+    }
+
+    try{
+        let result = await EventModel.findById(eventId).exec();
+        if(result) {// if returns a result
+            res.render('participantForm', 
+                { 
+                    event: modelUtil.event.filterEvent(result),
+                    _csrf: "CSRF token goes here",
+                });
+        } else {// returns null or identify
+            res.status(500).json({ msg: "Query result to null. Debug this."});
+        }
+    } catch(err) {
+        console.log("Error: " + err);
+        next(err);
+    }
+    
+}
+
+exports.GET_participantEdit = async function (req ,res, next) {
+    let eventId, participantId;
+    try {// checks if the IDs are valid
+        eventId = mongoose.Types.ObjectId(req.params.eventId);
+        participantId = mongoose.Types.ObjectId(req.params.participantId);
+    } catch(err) {
+        console.log("Error : " + err);
+    }
+
+    try {
+        let result = await ParticipantModel.findOne({_id: participantId, event: eventId}).exec();
+        if(result) {
+            console.log(modelUtil.participant.filterParticipant(result));
+            res.render('participantEdit', { participant: modelUtil.participant.filterParticipant(result)})
+        } else {
+            next(err);
+        }
+    } catch (err) {
+        console.log("Error: " + err);
+        next(err);
     }
 }

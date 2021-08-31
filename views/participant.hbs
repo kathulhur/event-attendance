@@ -1,3 +1,12 @@
 <div id="participantContainer">
     <h1>{{participant.name}}</h1>
+
+    <div class="btn-group mb-3" role="group">
+        <a class="btn btn-warning" id="edit-participant-btn" href="edit">Edit</a>
+        <a class="btn btn-danger" id="delete-participant-btn" href="#" data-event-id="{{participant.id}}" data-event-name="{{participant.name}}">Delete</a>
+    </div> 
+    <div id="error-container"></div>
+
 </div>
+
+<script src="/javascripts/participant.js"></script>

@@ -1,8 +1,17 @@
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  color: black;
 }
 
 a {
-  color: #00B7FF;
+  color: inherit;
+}
+
+a:link {
+  text-decoration: none;
+}
+
+#submit-btn {
+  border: 1px solid orange;
 }

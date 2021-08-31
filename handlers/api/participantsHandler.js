@@ -45,18 +45,18 @@ exports.api = {
 
     POST_participant : async function (req, res) {
         let eventId;
-
         try {// check if the id is valid
             eventId = mongoose.Types.ObjectId(req.params.eventId);
             req.body.eventId = eventId;// add the object id to the body for the filter
         } catch(err) {// invalid id
             console.error(err);
             res.status(400).json({ msg: "POST: Invalid event ID"});
+            return;
         }
 
         try {// find the event
             let event = await EventModel.findById(eventId).exec();
-
+            
             if(event){// if event found, create the save the participant
                 let participant = modelUtil.participant.createParticipant(req.body);
                 participant.save(function (err) {

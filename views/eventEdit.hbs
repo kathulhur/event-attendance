@@ -1,11 +1,11 @@
-
 <div id="container">
-    <form id="eventForm">
+    <form id="eventEditForm">
 
         <input type="hidden" name="_csrf" value="{{csrf}}">
+        <input type="hidden" name="event" value="{{event.id}}">
         <div class="mb-3">
             <label class="form-label" for="fieldEventName">Event Name</label>
-            <input class="form-control" id="fieldEventName" name="name" type="text" placeholder="Event Name" aria-label="default input example">
+            <input class="form-control" id="fieldEventName" name="name" type="text" placeholder="Event Name" value="{{event.name}}">
         </div>
 
         <div id="error-container" class="mb-3"></div>
@@ -14,4 +14,4 @@
     </form>
 </div>
 
-<script src="/javascripts/eventForm.js"></script>
+<script src="/javascripts/eventEdit.js"></script>
