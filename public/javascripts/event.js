@@ -31,6 +31,7 @@ document.getElementById('delete-event-btn')
 
 document.getElementById('delete-participant-btn')
 .addEventListener('click', async function(event) {
+    alert('hey')
     event.preventDefault();
     let data = document.getElementById('delete-event-btn');
 
@@ -39,7 +40,7 @@ document.getElementById('delete-participant-btn')
         eventId = data.getAttribute('data-event-id'),
         eventName = data.getAttribute('data-event-name');
 
-    let url = `/api/events/${eventId}/participants/${participantId}`;
+    let url = `/api/events/${eventId}/participants/${participantId}/delete`;
 
     try {
         let response = await fetch(url, {

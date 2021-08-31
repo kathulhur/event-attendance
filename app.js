@@ -37,7 +37,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/events', eventsRouter);
-app.use('/events', participantsRouter)
+app.use('/events', participantsRouter);
 app.use('/api/events', eventsRouterAPI);
 app.use('/api/events', participantsRouterAPI);
 

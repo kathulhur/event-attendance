@@ -16,9 +16,9 @@ form.addEventListener('submit', async event => {
 
     let errorContainer = document.getElementById('error-container');
     try{
-        let response = await fetch(`/api/events/${form.elements.event.value}/participants`, {method: 'post', headers, body});
+        let response = await fetch(`/api/events/${form.elements.event.value}/participants/create`, {method: 'post', headers, body});
         if(response.ok){
-            window.location.replace(`/events/${form.elements.event.value}`);
+            window.location.replace(`/events/${form.elements.event.value}/`);
         } else {
             errorContainer.innerHTML = '<b>Something went wrong. Please contact the developer.</b>';
         }

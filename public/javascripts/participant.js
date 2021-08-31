@@ -4,7 +4,7 @@ document.getElementById('delete-participant-btn')
     let data = document.getElementById('delete-event-btn');
 
 
-    let url = '/api' + window.location.pathname;
+    let url = '/api' + window.location.pathname + 'delete';
 
     try {
         let response = await fetch(url, {

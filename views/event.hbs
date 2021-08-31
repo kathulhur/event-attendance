@@ -19,9 +19,8 @@
                     {{#if participants}}
                         {{#each participants}}
                         <li class="list-group-item">
-                            <div class="d-flex justify-content-between">
-                                    <a href="/events/{{../event.id}}/participants/{{this.id}}/">{{this.name}}</a>
-                                    <a href="#" id="delete-participant-btn" data-participant-id="{{this.id}}" data-participant-name="{{this.name}}">Delete</a>
+                            <div>
+                                <a href="/events/{{../event.id}}/participants/{{this.id}}/">{{this.name}}</a>
                             </div>
                         </li>
                         {{/each}}
@@ -30,7 +29,7 @@
                         <li class="list-group-item text-center">This event has no participants yet.</li>
                     {{/unless}}
                 </ul>
-                <a href="/events/{{event.id}}/participants/create" id="submit-btn" class="btn">Add</a>
+                <a href="/events/{{event.id}}/participants/create" class="btn btn-secondary">Add</a>
             </div>
         </div> 
     </div>
