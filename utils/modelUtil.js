@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const EventModel = require('../models/eventModel');
-const ParticipantModel = require('../models/participantModel');
+const EventModel = require('../models/Event');
+const ParticipantModel = require('../models/Participant');
 function filterEvent(event) {
     let result = {
         id: event._id,

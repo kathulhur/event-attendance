@@ -6,18 +6,19 @@ var logger = require('morgan');
 var exphbs  = require('express-handlebars');
 
 const {credentials} = require('./config');
-
 process.env.DEBUG = credentials.DEBUG;
-process.env.MONGODB_URI = credentials.MONGODB_URI;
-require('./db');// setup the database
+
+// setup the database
+const mongodb = require('./mongoConnection.js');
+mongodb.connect();
 
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
-const participantsRouter = require('./routes/participants');
+const usersRouter = require('./routes/user');
+const participantsRouter = require('./routes/participant');
 const eventsRouter = require('./routes/events')
 
-const eventsRouterAPI = require('./routes/api/events');
-const participantsRouterAPI = require('./routes/api/participants');
+const eventsRouterAPI = require('./routes/api/event');
+const participantsRouterAPI = require('./routes/api/participant');
 
 var app = express();
 

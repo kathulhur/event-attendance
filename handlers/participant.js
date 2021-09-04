@@ -1,19 +1,20 @@
-const ParticipantModel = require('../models/participantModel');
 const mongoose = require('mongoose');
-const EventModel = require('../models/eventModel');
+const ParticipantModel = require('../models/Participant');
+const EventModel = require('../models/Event');
 const modelUtil = require('../utils/modelUtil');
+const db = require('../lib/db');
 
-exports.GET_participants = async function (req, res) {
+exports.GET_participants = async function (req, res) {// this handler is currently not in use
     let eventId;
     try{// check if the eventId is valid
-        eventId = mongoose.Types.ObjectId(req.params.eventId);
+        eventId = db.validateId(req.params.eventId);
     } catch (err) {
         console.log('Error: ' + err);
         res.status(404).json({ msg: "GET: Invalid Id"});
     }
 
     try {
-        let event = await EventModel.findById(eventId).exec();
+        let event = await db.event.getEventById(eventId);
         let results = await ParticipantModel.find({ event: eventId }).exec();
         if(results.length == 0) {
 
@@ -39,8 +40,8 @@ exports.GET_participants = async function (req, res) {
 exports.GET_participant = async function (req, res) {
     let eventId, participantId;
     try{// check if the IDs are valid
-        eventId = mongoose.Types.ObjectId(req.params.eventId);
-        participantId = mongoose.Types.ObjectId(req.params.participantId);
+        eventId = db.validateId(req.params.eventId);
+        participantId = db.validateId(req.params.participantId);
     } catch (err) {
         console.error('Error: ' + err);
         res.status(400).json({ msg: "GET: Invalid ID"});
@@ -48,9 +49,9 @@ exports.GET_participant = async function (req, res) {
     }
 
     try { // fetch the participant
-        let participant = await ParticipantModel.findOne({ _id: participantId, event: eventId }).exec();
+        let participant = await db.participant.getParticipantById(participantId);
         if(participant) {
-            res.render('participant', { participant: modelUtil.participant.filterParticipant(participant)});
+            res.render('participant', { participant: db.participant.filterParticipant(participant)});
         } else {
             res.status(404).json({ msg: "GET: Participant not found."});
         }
@@ -63,7 +64,7 @@ exports.GET_participant = async function (req, res) {
 exports.GET_participantForm = async function(req, res, next) {
     let eventId;
     try{// checks if the id is valid
-        eventId = mongoose.Types.ObjectId(req.params.eventId);
+        eventId = db.validateId(req.params.eventId);
     } catch(err){
         console.log("Error: Invalid id - " + err);
         next(err);
@@ -71,11 +72,11 @@ exports.GET_participantForm = async function(req, res, next) {
     }
 
     try{
-        let result = await EventModel.findById(eventId).exec();
-        if(result) {// if returns a result
+        let event = await db.event.getEventById(eventId);
+        if(event) {// if returns a result
             res.render('participantForm', 
                 { 
-                    event: modelUtil.event.filterEvent(result),
+                    event: db.event.filterEvent(event),
                     _csrf: "CSRF token goes here",
                 });
         } else {// returns null or identify
@@ -91,17 +92,16 @@ exports.GET_participantForm = async function(req, res, next) {
 exports.GET_participantEdit = async function (req ,res, next) {
     let eventId, participantId;
     try {// checks if the IDs are valid
-        eventId = mongoose.Types.ObjectId(req.params.eventId);
-        participantId = mongoose.Types.ObjectId(req.params.participantId);
+        eventId = db.validateId(req.params.eventId);
+        participantId = db.validateId(req.params.participantId);
     } catch(err) {
         console.log("Error : " + err);
     }
 
     try {
-        let result = await ParticipantModel.findOne({_id: participantId, event: eventId}).exec();
-        if(result) {
-            console.log(modelUtil.participant.filterParticipant(result));
-            res.render('participantEdit', { participant: modelUtil.participant.filterParticipant(result)})
+        let participant = await db.participant.getParticipantById(participantId);
+        if(participant) {
+            res.render('participantEdit', { participant: db.participant.filterParticipant(participant)})
         } else {
             next(err);
         }

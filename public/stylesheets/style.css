@@ -1,10 +1,11 @@
-body {
+/* body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   color: black;
-}
 
-a {
+} */
+
+/* a {
   color: inherit;
 }
 
@@ -14,4 +15,35 @@ a:link {
 
 #submit-btn {
   border: 1px solid orange;
+} */
+
+
+body {
+
 }
+
+#main-container {
+  /* border: 2px solid blue; */
+  
+}
+
+#nav-container {
+  /* border: 2px solid green; */
+}
+
+#section-container-1 {
+  /* background-color: white; */
+  /* border: 2px solid red; */
+}
+
+#section-container-2 {
+/* border: 2px solid red; */
+}
+.col, .col-2, .col-3, .col-4, .col-5, .col-6 {
+  /* border: 2px solid black; */
+}
+
+.h1 {
+
+}
+

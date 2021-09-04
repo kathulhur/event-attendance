@@ -1,16 +1,16 @@
 const mongoose = require('mongoose');
-const EventModel = require('../../models/eventModel');
-const util = require('../../utils/util');
+const EventModel = require('../../models/Event');
 const modelUtil = require('../../utils/modelUtil');
+const db = require('../../lib/db');
 
 exports.api = {
     GET_events: async function (req, res) {
         try {
-            let results = await EventModel.find().exec();// get all the event records
-            if (results.length == 0) {
+            let events = await db.event.getEvents();// get all the event records
+            if (events.length == 0) {
                 res.json({ msg: "GET: Empty data."});
-            }else if (results) {// if there are results, filter the data to be passed
-                res.json(modelUtil.event.filterEvents(results));// return the filtered result
+            }else if (events) {// if there are results, filter the data to be passed
+                res.json(db.event.filterEvents(events));// return the filtered result
 
             } else {
                 res.json({ msg: "GET: Something went wrong"});// No data in the database
@@ -23,18 +23,17 @@ exports.api = {
     GET_event: async function (req, res) {
         let eventId; 
         try { // check the validity of id
-            eventId = mongoose.Types.ObjectId(req.params.eventId);
+            eventId = db.validateId(req.params.eventId);
         } catch (err) {
             console.error("Error: " + err);
             res.status(400).json({ msg: "GET: InvalidID."})
         }
 
         try {
-            let result = await EventModel.findById(eventId).exec();// get all the event records
+            let event = await db.event.getEventById(eventId);// get all the event records
 
-            if(result) {// if there are results, filter the data to be passed
-                let event = modelUtil.event.filterEvent(result);
-                res.json(event);// return the filtered result
+            if(event) {// if there are results, filter the data to be passed
+                res.json(db.event.filterEvent(event));// return the filtered result
             } else {
                 res.status(404).json({ msg: "GET: Data not found."});// No data in the database
             }
@@ -45,42 +44,31 @@ exports.api = {
 
     POST_eventForm: async function (req, res) {
         try {
-            console.log('before')
-            let event = modelUtil.event.createEvent(req.body)
-
+            let event = db.event.createEvent(req.body)
             event = await event.save();
-            res.json(modelUtil.event.filterEvent(event));
-            console.log('after');
+            res.json(db.event.filterEvent(event));
         } catch (err) {
-            console.log("Error: " + err);
+            console.error("Error: " + err);
             res.status(500).json({ msg: "POST: Error saving data."});
         }
         
     },
 
-    PUT_eventForm: async function (req, res) {
+    PUT_event: async function (req, res) {
         let eventId;
-
         try {// check if the id is valid
-            eventId = mongoose.Types.ObjectId(req.params.eventId);
+            eventId = db.validateId(req.params.eventId);
         } catch {
             res.status(400).send({ msg: "Invalid ID"});
+            return;
         }
 
         try {//
-            let event = await EventModel.findById(eventId).exec();
+            let event = await db.event.getEventById(eventId);
 
             if(event) {
-                modelUtil.event.modifyEvent(event, req.body);
-
-                event.save()
-                .then( savedDoc => {
-                    res.json(modelUtil.event.filterEvent(savedDoc));
-                })
-                .catch( err => {
-                    console.log("Error: " + err);
-                    res.status(400).json( {msg: "PUT: Error update request."});
-                });
+                let event = await db.event.updateEventById(eventId, req.body);
+                res.json(db.event.filterEvent(event));
             } else {
                 res.status(404).json({msg: "PUT: No record match."});
             }
@@ -92,18 +80,21 @@ exports.api = {
     },
 
     DELETE_event: async function (req, res) {
-        let eventId = req.params.eventId;
+        let eventId;
         try {
-            eventId = mongoose.Types.ObjectId(req.params.eventId);
+            eventId = db.validateId(req.params.eventId);
         } catch(err) {
             console.error(err);
             res.status(400).json({ msg: "DELETE: Invalid Id"});
         }
 
         try {
-            let event = await EventModel.findByIdAndDelete({_id: eventId}).exec();
+            let event = await db.event.deleteEventById(eventId);
             if(event) {
-                res.json({ msg: "DELETE: Success" });
+                res.json({ 
+                    msg: "DELETE: Success",
+                    event: db.event.filterEvent(event)
+                });
             } else {
                 res.status(404).json({msg: "Event not found."});
             }

@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var eventsHandler = require('../handlers/eventsHandler');
+var eventsHandler = require('../handlers/event');
 
 // Events Page
 router.get('/', eventsHandler.GET_events);

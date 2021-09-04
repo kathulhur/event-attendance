@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
-const EventModel = require('../models/eventModel');
-const util = require('../utils/util');
+const EventModel = require('../models/Event');
+const participantModel = require('../models/Participant');
 const modelUtil = require('../utils/modelUtil');
-const participantModel = require('../models/participantModel');
+const db = require('../lib/db');
 
 exports.GET_eventForm = function (req, res) {
     res.render('eventForm', { csrf: 'CSRF token goes here'});
@@ -10,16 +10,18 @@ exports.GET_eventForm = function (req, res) {
 
 exports.GET_events = async function (req, res) {
     try {
-        let results = await EventModel.find().exec();// get all the event records
+        let results = await db.event.getEvents();// get all the event records
+        // console.log(results);
         if (results.length == 0) {
             res.json({ msg: "GET: Empty data."});
         }else if (results) {// if there are results, filter the data to be passed
-            res.render('events', { events: modelUtil.event.filterEvents(results) });// return the filtered result
+            res.render('events', { events: db.event.filterEvents(results) });// return the filtered result
 
         } else {
             res.json({ msg: "GET: Something went wrong"});// No data in the database
         }
     } catch(err) {
+        console.error(err);
         res.status(500).json({ msg: "Server error, please try again after a while."});// Server error
     }
 },
@@ -27,17 +29,18 @@ exports.GET_events = async function (req, res) {
 exports.GET_event = async function (req, res) {
     let eventId; 
     try { // check the validity of id
-        eventId = mongoose.Types.ObjectId(req.params.eventId);
+        eventId = db.validateId(req.params.eventId);
     } catch (err) {
         console.error("Error: " + err);
         res.status(400).json({ msg: "GET: InvalidID."})
     }
 
     try {
-        let result = await EventModel.findById(eventId).exec();// get all the event records
-        let participants = await participantModel.find({event: eventId}).exec(); // get all the participants of this event
-        if(result) {// if there are results, filter the data to be passed
-            res.render('event', { event: modelUtil.event.filterEvent(result), participants: modelUtil.participant.filterParticipants(participants) } );// return the filtered result
+        
+        let event = await db.event.getEventById(eventId);// get the event
+        let participants = await db.event.getEventParticipants(eventId); // get all the participants of this event
+        if(event) {// if there are results, filter the data to be passed
+            res.render('event', { event: db.event.filterEvent(event), participants: db.participant.filterParticipants(participants) } );// return the filtered result
         } else {
             res.status(404).json({ mg: "GET: Data not found."});// No data in the database
         }
@@ -51,18 +54,18 @@ exports.GET_eventEdit = async function (req, res, next) {
     let eventId;
     try{ // checks if the id is valid
         console.log("Event ID: " + req.params.eventId);
-        eventId = mongoose.Types.ObjectId(req.params.eventId);
+        eventId = db.validateId(req.params.eventId);
     } catch(err) {
         console.log("Error: " + err);
         next(err);
     }
 
     try { // Get the event from the database
-        let result = await EventModel.findById(eventId).exec();
+        let result = await db.event.getEventById(eventId);
         if(result) {
             res.render('eventEdit', 
             { 
-                event: modelUtil.event.filterEvent(result),
+                event: db.event.filterEvent(result),
                 csrf: "CSRF token goes here."
             });
         } else {

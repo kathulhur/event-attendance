@@ -1,17 +1,18 @@
-const ParticipantModel = require('../../models/participantModel');
-const EventModel = require('../../models/eventModel');
-const mongoose = require('mongoose');
-const modelUtil = require('../../utils/modelUtil');
+const mongoose          = require('mongoose');
+const ParticipantModel  = require('../../models/Participant');
+const EventModel        = require('../../models/Event');
+const modelUtil         = require('../../utils/modelUtil');
+const db                = require('../../lib/db');
 
 exports.api = {
     GET_participants: async function (req, res) {
         try { // fetch participants
-            let results = await ParticipantModel.find().exec();
-            if (results.length == 0) {// if no data
+            let participants = await db.participant.getParticipants();
+            if (participants.length == 0) {// if no data
                 res.json({ msg: "GET: No available data."});
-            } else if (results) {// if there are result
-                let participants = modelUtil.participant.filterParticipants(results);
-                res.json(participants);
+            } else if (participants) {// if there are result
+                let filteredParticipants = db.participant.filterParticipants(participants);
+                res.json(filteredParticipants);
             } else {// results return null (or something that evaluates to false);
                 res.status(500).json({ msg: "GET: FIX THIS!"});
             }
@@ -21,18 +22,18 @@ exports.api = {
         }
     },
 
-    GET_participant: async function(req, res) {
+    GET_eventParticipants: async function(req, res) {
         let eventId;;
         try {// checks whether the id is valid mongodb ObjectId
-            eventId = mongoose.Types.ObjectId(req.params.eventId);
+            eventId = db.validateId(req.params.eventId);
         } catch (err) {
             res.status(400).json({ msg: "Invalid event ID"});
         }
 
         try {// fetch the participants data
-            let results = await ParticipantModel.find({ event: eventId }).exec();
-            if(results.length != 0) {
-                res.json(modelUtil.participant.filterParticipants(results));
+            let participants = await db.event.getEventParticipants(eventId);
+            if(participants.length != 0) {
+                res.json(db.participant.filterParticipants(participants));
             } else {
                 res.status(404).json({ msg: "GET: No participants found."});
             }
@@ -46,7 +47,7 @@ exports.api = {
     POST_participant : async function (req, res) {
         let eventId;
         try {// check if the id is valid
-            eventId = mongoose.Types.ObjectId(req.params.eventId);
+            eventId = db.validateId(req.params.eventId);
             req.body.eventId = eventId;// add the object id to the body for the filter
         } catch(err) {// invalid id
             console.error(err);
@@ -55,24 +56,19 @@ exports.api = {
         }
 
         try {// find the event
-            let event = await EventModel.findById(eventId).exec();
+            let event = await db.event.getEventById(eventId);
             
             if(event){// if event found, create the save the participant
-                let participant = modelUtil.participant.createParticipant(req.body);
-                participant.save(function (err) {
-                    if(err){// error saving
-                        console.log("Error: " + err);
-                        res.status(500).send({result: "POST: Failed saving participant data."});
-                    } else {// saving success
-                        res.json(modelUtil.participant.filterParticipant(participant));
-                    }
-                }); 
+                let newParticipant = db.participant.createParticipant(req.body);
+                let participant = await newParticipant.save();
+                res.json(db.participant.filterParticipant(participant));
+                
             } else { //otherwise, return event not found
                 res.status(404).json({ msg: "POST: Event not found"});
             }
         } catch(err) {// failed retrieving the event
             console.log("Error: " + err);
-            res.status(500).json({ msg: "An error occured while retrieving event."});
+            res.status(500).json({ msg: "An error occured while saving the data."});
         }
     },
 
@@ -81,17 +77,20 @@ exports.api = {
             eventId;
 
         try { //check if the IDs are valid
-            participantId = mongoose.Types.ObjectId(req.params.participantId);
-            eventId = mongoose.Types.ObjectId(req.params.eventId)
+            participantId = db.validateId(req.params.participantId);
+            eventId = db.validateId(req.params.eventId)
         } catch (err) {
             console.error("Error: " + err);
             res.status(400).json({ msg: "DELETE: Invalid Id."});
         }
 
         try { // delete the object
-            let deletedParticipant = await ParticipantModel.findOneAndDelete({_id: participantId, event: eventId}).exec();
+            let deletedParticipant = await db.participant.deleteParticipantById(participantId);
             if(deletedParticipant){
-                res.json({ msg: "DELETE: Success"});
+                res.json({ 
+                        msg: "DELETE: Success"
+                    
+                    });
             } else {
                 res.status(404).json({ msg: "DELETE: Participant not found."});s
             }
@@ -106,21 +105,17 @@ exports.api = {
         let participantId,
             eventId;
         try{// Valid ID
-            participantId = mongoose.Types.ObjectId(req.params.participantId);
-            eventId = mongoose.Types.ObjectId(req.params.eventId);
+            participantId = db.validateId(req.params.participantId);
+            eventId = db.validateId(req.params.eventId);
         } catch(err) {// Invalid ID
             console.log('Error: ' + err);
             res.status(400).json({ msg: "PUT: Invalid ID."});
         }
 
         try {
-            let updatedParticipant = await ParticipantModel.findOneAndUpdate(
-                {_id: participantId, event: eventId},
-                { name: req.body.name ? req.body.name : this.name},
-                { new: true});
-
+            let updatedParticipant = await db.participant.updateParticipantById(participantId, req.body);
             if(updatedParticipant) { // updated
-                res.json(modelUtil.participant.filterParticipant(updatedParticipant));
+                res.json(db.participant.filterParticipant(updatedParticipant));
             } else { // participant not found
                 res.status(404).json({ msg: "PUT: Participant not found."});
             }
