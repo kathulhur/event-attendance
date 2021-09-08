@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var exphbs  = require('express-handlebars');
+const passport = require('passport')
 
 const {credentials} = require('./config');
 process.env.DEBUG = credentials.DEBUG;
@@ -32,8 +33,13 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+
+app.use(passport.initialize());
+require('./lib/strategies')(passport);// load passport strategies
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

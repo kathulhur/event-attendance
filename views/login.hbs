@@ -1,0 +1,20 @@
+<div class="container w-50 mt-5 d-flex justify-content-center">
+    <form id="loginForm" class="w-100 m-5" action="/users/login" method="POST">
+        <input type="hidden" name="_csrf" value="{{csrf}}">
+        <div class="mb-3 w-100">
+            <label class="form-label" for="fieldEmail">Email</label>
+            <input class="form-control" id="fieldEmail" name="email" type="email" placeholder="abc@email.com">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="fieldPassword">Password</label>
+            <input class="form-control" id="fieldPassword" name="password" type="password" placeholder="password">
+        </div>
+
+        <div id="error-container" class="mb-3"></div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+        
+    </form>
+</div>
+
+<script src="/javascripts/eventForm.js"></script>
