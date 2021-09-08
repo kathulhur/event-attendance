@@ -13,12 +13,7 @@ router.get('/login', function(req, res, next) {
   res.render('login');
 });
 
-router.post('/login', passport.authenticate('local', {
-    successRedirect: '/',
-    failureRedirect: '/users/login',
-    session: false
-  })
-);
+router.post('/login', userHandler.login);
 
 router.get('/register', function(req, res) {
   res.render('register');

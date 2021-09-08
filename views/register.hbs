@@ -2,7 +2,7 @@
 
     <form id="loginForm" class="w-100 m-5" action="/users/register" method="POST">
         <input type="hidden" name="_csrf" value="{{csrf}}">
-
+        {{> messages }}
         <div class="mb-3 w-100">
             <label class="form-label" for="fieldName">Name</label>
             <input class="form-control" id="fieldName" name="name" type="text" placeholder="John Doe">

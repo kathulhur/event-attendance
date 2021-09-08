@@ -1,46 +1,72 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var exphbs  = require('express-handlebars');
-const passport = require('passport')
+const express     = require('express');
+const app         = express();
+const createError = require('http-errors');
+const path        = require('path');
+const logger      = require('morgan');
+const exphbs      = require('express-handlebars');
+const session     = require('express-session');
+const flash       = require('connect-flash');
 
+// passport configuration
+const passport = require('passport')
+require('./lib/auth').configure(passport);// load passport strategies and serializers
+
+// Get all environment configuration
 const {credentials} = require('./config');
 process.env.DEBUG = credentials.DEBUG;
+process.env.cookieSecret = credentials.cookieSecret;
 
-// setup the database
+// Connect to mongodb database
 const mongodb = require('./mongoConnection.js');
 mongodb.connect();
 
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/user');
-const participantsRouter = require('./routes/participant');
-const eventsRouter = require('./routes/events')
-
-const eventsRouterAPI = require('./routes/api/event');
+// Router imports
+const indexRouter           = require('./routes/index');
+const usersRouter           = require('./routes/user');
+const participantsRouter    = require('./routes/participant');
+const eventsRouter          = require('./routes/events')
+const eventsRouterAPI       = require('./routes/api/event');
 const participantsRouterAPI = require('./routes/api/participant');
 
-var app = express();
+
+
 
 // view engine setup
 app.engine('.hbs', exphbs({ extname: '.hbs'}));
 app.set('view engine', '.hbs');
 
 
-
 app.use(logger('dev'));
-app.use(express.json());
+
+// Body parser
 app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
 
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
+// configure passport
 
+//Express Session
+app.use(session({
+  secret: process.env.cookieSecret,
+  resave: true,
+  saveUninitialized: true,
+}));
+
+// Passport Middleware
 app.use(passport.initialize());
-require('./lib/strategies')(passport);// load passport strategies
+app.use(passport.session());
+// Connect-flash
+app.use(flash());
+app.use(function (req, res, next) {
+  res.locals.success_msgs = req.flash('success_msg');
+  res.locals.error_msgs = req.flash('error_msgs');
+  res.locals.info_msgs = req.flash('info_msgs');
+  next();
+});
 
+// Routes
+app.use(express.static(path.join(__dirname, 'public')));// static route
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/events', eventsRouter);
