@@ -1,6 +1,5 @@
 
-async function deleteEvent(eventId){
-    console.log(eventId);
+async function deleteEvent(eventId, redirect){
     let url = `/api/events/${eventId}/delete`;
     
     try {
@@ -9,8 +8,8 @@ async function deleteEvent(eventId){
         });
 
         if(response.ok){
-            alert('Delete success')
-            window.location.replace('/admin/events');
+            alert('Delete Success');
+            window.location.replace(redirect);
         } else {
             let json = await response.json();
             console.log(json);
@@ -25,3 +24,37 @@ async function deleteEvent(eventId){
     }
 
 };
+
+async function editEvent(event) {
+    event.preventDefault();
+    let id = event.target.elements.id.value;
+    let headers = { 'Content-Type' : 'application/json' };
+    let url = `/api/events/${id}/edit`;
+    let body = JSON.stringify({
+        id: id,
+        name: event.target.elements.name.value,
+        start: event.target.elements.start.value,
+        end: event.target.elements.end.value
+    });
+
+
+    try {
+        const response = await fetch(url, {
+            headers: headers,
+            method: 'PUT', // *GET, POST, PUT, DELETE, etc.
+            body: body
+        });
+        let res = await response.json();
+        if(response.ok){
+            alert('Edit Success');
+            window.location.replace(`/admin/events/${res.event.slug}`);
+        } else {
+            console.log(res);
+            alert("Edit failed : " + res.msg);
+        }
+        return;
+    } catch(err) {
+        console.log("Error: " + err);
+        alert("Edit failed");
+    }
+}

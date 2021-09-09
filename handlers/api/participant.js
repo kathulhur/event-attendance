@@ -1,6 +1,6 @@
 const mongoose          = require('mongoose');
-const ParticipantModel  = require('../../models/Participant');
-const EventModel        = require('../../models/Event');
+const Participant  = require('../../models/Participant');
+const Event        = require('../../models/Event');
 const db                = require('../../lib/db');
 
 exports.api = {
@@ -50,8 +50,15 @@ exports.api = {
                 let event = await db.event.getEventById(eventId);
                 if(event){// if event found, create the save the participant
                     let newParticipant = db.participant.createParticipant(req.body);
-                    let participant = await newParticipant.save();
-                    res.json(db.participant.filterParticipant(participant));
+                    await newParticipant.save();// save the new participant
+                    event.update({// increment the participants counter
+                        $inc: {
+                            participants: 1
+                        }
+                    });
+                    res.json({
+                        participant: db.participant.filterParticipant(newParticipant)
+                    });
                     
                 } else { //otherwise, return event not found
                     res.status(404).json({ msg: "POST: Event not found"});
@@ -70,53 +77,57 @@ exports.api = {
         let participantId,
             eventId;
 
-        try { //check if the IDs are valid
-            participantId = db.validateId(req.params.participantId);
-            eventId = db.validateId(req.params.eventId)
-        } catch (err) {
-            console.error("Error: " + err);
-            res.status(400).json({ msg: "DELETE: Invalid Id."});
+        if((participantId = db.isValidMongoId(req.params.participantId)) && (eventId = db.isValidMongoId(req.params.eventId))){
+            try { // delete the object
+                let deletedParticipant = await Participant.findByIdAndDelete(participantId);
+                if(deletedParticipant){
+                    await Event.findByIdAndUpdate(eventId, {
+                        $inc: {
+                            participants: -1
+                        }
+                    });
+                    return res.json({ 
+                            msg: "DELETE: Success",
+                            participant: db.participant.filterParticipant(deletedParticipant)
+                        });
+                } else {
+                    res.status(404).json({ msg: "DELETE: Participant not found."});
+                }
+                   
+            } catch(err) {
+                console.error("ERROR: " + err);
+                return res.status(500).json({ msg: "DELETE: Error deletion."});
+            }
+        } else {
+            return res.status(400).json({ msg: "DELETE: Invalid Id."});
         }
 
-        try { // delete the object
-            let deletedParticipant = await db.participant.deleteParticipantById(participantId);
-            if(deletedParticipant){
-                res.json({ 
-                        msg: "DELETE: Success",
-                        participant: db.participant.filterParticipant(deletedParticipant)
-                    });
-            } else {
-                res.status(404).json({ msg: "DELETE: Participant not found."});s
-            }
-               
-        } catch(err) {
-            console.error("ERROR: " + err);
-            res.status(500).json({ msg: "DELETE: Error deletion."});
-        }
     },
 
     PUT_participant: async function(req, res) {
-        let participantId,
-            eventId;
-        try{// Valid ID
-            participantId = db.validateId(req.params.participantId);
-            eventId = db.validateId(req.params.eventId);
-        } catch(err) {// Invalid ID
-            console.log('Error: ' + err);
-            res.status(400).json({ msg: "PUT: Invalid ID."});
+        
+        if(db.isValidMongoId(req.body.id) && db.isValidMongoId(req.body.event)){
+            try {
+                let updatedParticipant = await db.participant.updateParticipantById(req.body);
+                let event = await Event.findById(req.body.event);
+                
+                if(updatedParticipant) { // updated
+                    res.json(
+                    {
+                        event: db.event.filterEvent(event),
+                        participant: db.participant.filterParticipant(updatedParticipant),
+                    });
+                } else { // participant not found
+                    res.status(404).json({ msg: "PUT: Participant not found."});
+                }
+            } catch(err) {
+                console.log("Error: " + err);
+                res.status(500).json({ msg: "PUT: Update error."});
+            }
+        } else {
+            return res.json({msg: "Invalid ID" })
         }
 
-        try {
-            let updatedParticipant = await db.participant.updateParticipantById(participantId, req.body);
-            if(updatedParticipant) { // updated
-                res.json(db.participant.filterParticipant(updatedParticipant));
-            } else { // participant not found
-                res.status(404).json({ msg: "PUT: Participant not found."});
-            }
-        } catch(err) {
-            console.log("Error: " + err);
-            res.status(500).json({ msg: "PUT: Update error."});
-        }
     }
 }
 

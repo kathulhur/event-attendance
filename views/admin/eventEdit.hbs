@@ -1,11 +1,17 @@
 <a href="/admin/events">back</a>
-<form id="eventEditForm">
-    <input name="eventId" type="hidden" value="{{event.id}}">
+<form id="eventEditForm" onsubmit="editEvent(event)">
+    <input name="id" type="hidden" value="{{event.id}}">
 
     <label for="fieldName">Event Name</label>
     <input id="fieldName" type="text" name="name" value="{{event.name}}">
 
+    <label for="fieldStart">Start of Event</label>
+    <input id="fieldStart" type="datetime-local" name="start" value="{{event.start}}">
+    
+    <label for="fieldEnd">End of Event</label>
+    <input id="fieldEnd" type="datetime-local" name="end" value="{{event.end}}">
+    
     <input type="submit">
 </form>
 
-<script src="/admin/javascripts/eventEdit.js"></script>
+<script src="/admin/javascripts/event.js"></script>

@@ -1,13 +1,14 @@
 <a href="/admin/events">back</a>
 <h1>{{event.name}} - [{{event.status}}]</h1>
+<p>participants: {{event.participants}}</p>
 <p>{{event.start}} - {{event.end}}</p>
-<a href="/admin/events/{{event.id}}/edit">Edit</a>
-<button onclick="deleteEvent('{{event.id}}')" data-event-id="{{event.id}}">Delete</button>
+<a href="/admin/events/{{event.slug}}/edit">Edit</a>
+<button onclick="deleteEvent('{{event.id}}', '/admin/events')">Delete</button>
 <div id="error-container"></div>
 <ol>
     {{#each participants}}
     <li>
-        <a href="/admin/events/{{../event.slug}}/participants/{{this.id}}">{{this.name}}</a>
+        <a href="/admin/events/{{../event.slug}}/participants/{{this.slug}}">{{this.name}}</a>
         <button onclick="deleteParticipant('{{../event.id}}', '{{this.id}}', '/admin/events/{{../event.slug}}')">delete</button>
         </li>
     {{/each}}

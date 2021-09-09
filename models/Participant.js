@@ -11,6 +11,10 @@ let ParticipantSchema = new Schema({
         type: String,
         required: true
     },
+    slug: {
+        type: String,
+        required: true,
+    },
     age: {
         type: Number,
         required: true

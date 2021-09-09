@@ -15,7 +15,7 @@ router.get('/', async function(req, res, next) {
     }
   }
   let events = await Event.find().limit(3);
-  console.log(events);
+
   return res.render('index', { 
     user: user,
     events: db.event.filterEvents(events)

@@ -32,7 +32,9 @@ router.post('/events/create', async function(req, res) {
     try {
         let newEvent = db.event.createEvent(req.body);
         await newEvent.save();
-        return res.redirect('/admin/events');
+        return res.render('admin/event', {
+            event: db.event.filterEvent(newEvent)
+        });
     } catch(err) {
         console.error("Error [/events/create] " + err);
         return next(err);
@@ -44,9 +46,9 @@ router.post('/events/create', async function(req, res) {
 router.get('/events/:eventSlug', async function (req, res, next) {
 
     try {// check the event if it exist
-        let event = await Event.findOne({ slug: req.params.eventSlug});
+        let event = await Event.findOne({ slug: req.params.eventSlug}).lean();
         if(event){
-            let participants = await Participant.find({ event: event.id });
+            let participants = await Participant.find({ event: event._id }).lean();
             res.render('admin/event', 
             { 
                 event: db.event.filterEvent(event),
@@ -56,16 +58,24 @@ router.get('/events/:eventSlug', async function (req, res, next) {
             next(new Error("Event does not exist"));
         }
     } catch (err) {
-        console.error('Error [/events/:eventId] ' + err);
+        console.error('Error [/events/:eventSlug] ' + err);
         next(new Error("Server Error"));
     }
 });
 
-router.get('/events/:eventId/edit', async function (req, res, next) {
+router.get('/events/:eventSlug/edit', async function (req, res, next) {
     try {
-        let event = await Event.findById(req.params.eventId);
+        let event = await Event.findOne({ slug: req.params.eventSlug }).lean();
+        console.log(event);
         if(event) {
-            return res.render('admin/eventEdit', { event: db.event.filterEvent(event) });
+            let fEvent = {
+                id: event._id,
+                slug: event.slug,
+                name: event.name,
+                start: db.toDatetimeLocal(event.start),
+                end: db.toDatetimeLocal(event.end)
+            }
+            return res.render('admin/eventEdit', { event: fEvent });
         } else {
             next(new Error('Event not found'));
         }
@@ -88,6 +98,11 @@ router.get('/events/:eventSlug/participants/create', async function(req, res, ne
 router.post('/events/:eventSlug/participants/create', async function(req, res, next) {
     try{
         let newParticipant = db.participant.createParticipant(req.body);
+        await Event.findByIdAndUpdate(req.body.event, {// increment the participants counter by 1
+            $inc: {
+                participants: 1
+            }
+        });
         await newParticipant.save();
         return res.redirect(`/admin/events/${req.params.eventSlug}`);
     } catch(err) {
@@ -96,31 +111,30 @@ router.post('/events/:eventSlug/participants/create', async function(req, res, n
     }
 });
 
-router.get('/events/:eventSlug/participants/:participantId', async function(req, res, next) {
-    let participantId = req.params.participantId;
+router.get('/events/:eventSlug/participants/:participantSlug', async function(req, res, next) {
+    let participantSlug = req.params.participantSlug;
     let eventSlug = req.params.eventSlug;
     try{
-        let event = await Event.findOne({ slug: eventSlug });
-        let participant = await Participant.findById(participantId);
-        console.log(event);
-        console.log(participant);
+        let participant = await Participant.findOne({slug: participantSlug}).populate('event').lean();
         return res.render('admin/participant', 
         { 
             participant: db.participant.filterParticipant(participant),
-            event: db.event.filterEvent(event)
         });
     } catch(err) {
         console.error("Error [/events/:eventId/participants/:participantId] " + err);
-        next(new Error("Server Error"));
+        return next(new Error("Server Error"));
     }
 });
 
 
-router.get('/events/:eventId/participants/:participantId/edit', async function(req, res, next) {
+router.get('/events/:eventSlug/participants/:participantSlug/edit', async function(req, res, next) {
 
     try{
-        let participant = await db.participant.getParticipantById(req.params.participantId);
-        return res.render('admin/participantEdit', { participant: db.participant.filterParticipant(participant) });
+        let participant = await Participant.findOne({ slug: req.params.participantSlug }).populate('event').lean();
+        console.log(participant.event._id.str)
+        return res.render('admin/participantEdit', { 
+            participant: db.participant.filterParticipant(participant) 
+        });
     } catch {
         console.error('Error [/events/:eventId/participants/:participantId/edit] ' + err);
         return next(err);

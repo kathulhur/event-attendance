@@ -70,7 +70,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/api/events', eventsRouterAPI);
 app.use('/api/events', participantsRouterAPI);
-app.use('/admin', auth.ensureAuthenticatedAdmin, adminRouter);
+app.use('/admin', adminRouter);
 
 
 // catch 404 and forward to error handler
