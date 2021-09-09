@@ -1,0 +1,11 @@
+<a href="/admin/events">back</a>
+<form id="eventEditForm">
+    <input name="eventId" type="hidden" value="{{event.id}}">
+
+    <label for="fieldName">Event Name</label>
+    <input id="fieldName" type="text" name="name" value="{{event.name}}">
+
+    <input type="submit">
+</form>
+
+<script src="/admin/javascripts/eventEdit.js"></script>

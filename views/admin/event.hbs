@@ -1,0 +1,13 @@
+<a href="/admin/events">back</a>
+<h1>{{event.name}} - [{{event.id}}]</h1>
+<a href="/admin/events/{{event.id}}/edit">Edit</a>
+<button id="deleteBtn" data-event-id="{{event.id}}">Delete</button>
+<div id="error-container"></div>
+<ol>
+    {{#each participants}}
+    <li><a href="/admin/events/{{../event.id}}/participants/{{this.id}}">{{this.name}}</a></li>
+    {{/each}}
+</ol>
+<a href="/admin/events/{{event.id}}/participants/create">Add</a>
+
+<script src="/admin/javascripts/event.js"></script>

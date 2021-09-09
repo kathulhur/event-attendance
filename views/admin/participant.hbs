@@ -1,0 +1,7 @@
+<a href="/admin/events/{{participant.event}}">back</a>
+<h1>EventId - [{{participant.event}}]</h1>
+<h1>{{participant.name}}</h1>
+<a href="/admin/events/{{participant.event}}/participants/{{participant.id}}/edit">Edit</a>
+<button id="deleteParticipantBtn" data-event-id="{{participant.event}}" data-participant-id="{{participant.id}}">Delete</button>
+
+<script src="/admin/javascripts/participant.js"></script>

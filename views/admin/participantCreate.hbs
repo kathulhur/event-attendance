@@ -1,0 +1,10 @@
+<a href="/admin/events/{{event.id}}">back</a>
+<form action="/api/events/{{event.id}}/participants/create" method="post">
+
+    <input type="hidden" name="event" value="{{event.id}}">
+
+    <label for="fieldName">Event Name</label>
+    <input id="fieldName" type="text" name="name">
+
+    <input type="submit">
+</form>
