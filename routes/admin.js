@@ -11,7 +11,7 @@ router.get('/', function(req, res) {
 });
 
 
-
+// Events list page
 router.get('/events', async function(req, res, next) {
     try {
         let events = await Event.find();
@@ -22,14 +22,16 @@ router.get('/events', async function(req, res, next) {
     }
 });
 
+// Event form
 router.get('/events/create', function(req, res) {
     return res.render('admin/eventCreate');
 });
 
+// Submit form
 router.post('/events/create', async function(req, res) {
     try {
         let newEvent = db.event.createEvent(req.body);
-        newEvent.save();
+        await newEvent.save();
         return res.redirect('/admin/events');
     } catch(err) {
         console.error("Error [/events/create] " + err);
@@ -38,11 +40,11 @@ router.post('/events/create', async function(req, res) {
     
 });
 
-router.get('/events/:eventId', async function (req, res, next) {
-    let eventId = req.params.eventId;
+// Event Details
+router.get('/events/:eventSlug', async function (req, res, next) {
 
     try {// check the event if it exist
-        let event = await Event.findById(eventId);
+        let event = await Event.findOne({ slug: req.params.eventSlug});
         if(event){
             let participants = await Participant.find({ event: event.id });
             res.render('admin/event', 
@@ -73,10 +75,9 @@ router.get('/events/:eventId/edit', async function (req, res, next) {
     }
 });
 
-router.get('/events/:eventId/participants/create', async function(req, res, next) {
-    console.log(req.params.eventId);
+router.get('/events/:eventSlug/participants/create', async function(req, res, next) {
     try{
-        let event = await db.event.getEventById(db.validateId(req.params.eventId));
+        let event = await Event.findOne({ slug: req.params.eventSlug });
         return res.render('admin/participantCreate', { event: db.event.filterEvent(event) });
     } catch {
         console.error('Error [/events/:eventId/participants/create] ' + err);
@@ -84,12 +85,30 @@ router.get('/events/:eventId/participants/create', async function(req, res, next
     }
 });
 
-router.get('/events/:eventId/participants/:participantId', async function(req, res, next) {
-    let eventId = req.params.eventId, 
-        participantId = req.params.participantId;
+router.post('/events/:eventSlug/participants/create', async function(req, res, next) {
     try{
+        let newParticipant = db.participant.createParticipant(req.body);
+        await newParticipant.save();
+        return res.redirect(`/admin/events/${req.params.eventSlug}`);
+    } catch(err) {
+        console.error('Error [/events/:eventId/participants/create] ' + err);
+        return next(err);
+    }
+});
+
+router.get('/events/:eventSlug/participants/:participantId', async function(req, res, next) {
+    let participantId = req.params.participantId;
+    let eventSlug = req.params.eventSlug;
+    try{
+        let event = await Event.findOne({ slug: eventSlug });
         let participant = await Participant.findById(participantId);
-        res.render('admin/participant', { participant: db.participant.filterParticipant(participant) });
+        console.log(event);
+        console.log(participant);
+        return res.render('admin/participant', 
+        { 
+            participant: db.participant.filterParticipant(participant),
+            event: db.event.filterEvent(event)
+        });
     } catch(err) {
         console.error("Error [/events/:eventId/participants/:participantId] " + err);
         next(new Error("Server Error"));

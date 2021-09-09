@@ -61,7 +61,6 @@ exports.api = {
                 res.status(500).json({ msg: "An error occured while saving the data."});
             }
         } else {
-            console.error(err);
             return res.status(400).json({ msg: "POST: Invalid event ID"});
         }
 

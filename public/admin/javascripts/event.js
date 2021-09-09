@@ -1,9 +1,6 @@
 
-document.getElementById('deleteBtn')
-.addEventListener('click', async function (event){
-    event.preventDefault();
-    let eventId = this.dataset.eventId;
-
+async function deleteEvent(eventId){
+    console.log(eventId);
     let url = `/api/events/${eventId}/delete`;
     
     try {
@@ -16,6 +13,7 @@ document.getElementById('deleteBtn')
             window.location.replace('/admin/events');
         } else {
             let json = await response.json();
+            console.log(json);
             document.getElementById("error-container")
                 .innerHTML = `<b>${json.msg}</b>`
         }
@@ -26,4 +24,4 @@ document.getElementById('deleteBtn')
             .innerHTML = `<b>Something went wrong. Check the js file.</b>`
     }
 
-});
+};

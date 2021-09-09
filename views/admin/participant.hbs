@@ -1,7 +1,10 @@
 <a href="/admin/events/{{participant.event}}">back</a>
 <h1>EventId - [{{participant.event}}]</h1>
-<h1>{{participant.name}}</h1>
+<h2>{{participant.name}}[{{participant.age}}]</h1>
+<p>{{participant.course}} - {{participant.institution}}</p>
+<p>registered: {{participant.registered}}</p>
+
 <a href="/admin/events/{{participant.event}}/participants/{{participant.id}}/edit">Edit</a>
-<button id="deleteParticipantBtn" data-event-id="{{participant.event}}" data-participant-id="{{participant.id}}">Delete</button>
+<button onclick="deleteParticipant('{{participant.event}}', '{{participant.id}}', '/admin/events/{{event.slug}}')">Delete</button>
 
 <script src="/admin/javascripts/participant.js"></script>

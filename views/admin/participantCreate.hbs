@@ -1,10 +1,19 @@
-<a href="/admin/events/{{event.id}}">back</a>
-<form action="/api/events/{{event.id}}/participants/create" method="post">
+<a href="/admin/events/{{event.slug}}">back</a>
+<form action="/admin/events/{{event.slug}}/participants/create" method="post">
 
     <input type="hidden" name="event" value="{{event.id}}">
 
-    <label for="fieldName">Event Name</label>
+    <label for="fieldName">Name</label>
     <input id="fieldName" type="text" name="name">
+
+    <label for="fieldAge">Age</label>
+    <input id="fieldAge" type="number" name="age">
+
+    <label for="fieldCourse">Course</label>
+    <input id="fieldCourse" type="text" name="course">
+
+    <label for="fieldInstitution">Institution</label>
+    <input id="fieldInstitution" type="text" name="institution">
 
     <input type="submit">
 </form>

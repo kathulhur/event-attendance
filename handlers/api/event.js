@@ -77,9 +77,9 @@ exports.api = {
 
     DELETE_event: async function (req, res) {
         let eventId;
-        if(db.isValidMongoId(req.params.eventId)) {
+        if(eventId = db.isValidMongoId(req.params.eventId)) {
             try {
-                let event = await db.event.deleteEventById(eventId);
+                let event = await Event.findByIdAndDelete(eventId);
                 if(event) {
                     res.json({ 
                         msg: "DELETE: Success",

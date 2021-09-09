@@ -1,11 +1,5 @@
-document.getElementById('deleteParticipantBtn')
-.addEventListener('click', async function(event) {
-    event.preventDefault();
-    let eventId = this.dataset.eventId;
-    let participantId = this.dataset.participantId;
-
+async function deleteParticipant(eventId, participantId, redirect) {
     let url = `/api/events/${eventId}/participants/${participantId}/delete`;
-
     try {
         let response = await fetch(url, {
             method: "DELETE",
@@ -13,7 +7,7 @@ document.getElementById('deleteParticipantBtn')
 
         if(response.ok) {
             alert('Delete success.');
-            window.location.replace('../../');
+            window.location.replace(redirect);
         } else {
             alert('Error: Delete failed.');
         }
@@ -21,4 +15,4 @@ document.getElementById('deleteParticipantBtn')
         console.log("Error: " + err);
         alert(`Something went wrong. Check the js file.`)
     }
-});
+};
