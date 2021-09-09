@@ -1,9 +1,11 @@
 var express = require('express');
 var router = express.Router();
+const Event = require('../models/Event');
 const auth = require('../lib/auth');
+const db = require('../lib/db');
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', async function(req, res, next) {
   let user = false;
   if(req.user) {
     user = {
@@ -12,7 +14,13 @@ router.get('/', function(req, res, next) {
       isAuthenticated: req.isAuthenticated()
     }
   }
-  res.render('index', { user: user });
+  let events = await Event.find().limit(3);
+  console.log(events);
+  return res.render('index', { 
+    user: user,
+    events: db.event.filterEvents(events)
+  });
+
 });
 
 

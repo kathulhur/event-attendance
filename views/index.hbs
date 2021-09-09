@@ -8,5 +8,22 @@
         <a href="/users/login">Login</a>
     {{/unless}}
     <a href="/users/register">Sign up</a>
+
+    <div class="main-container">
+        {{#if events}}
+        <h1>Upcoming Events</h1>
+        {{#each events}}
+            <ul>
+                <li><a href="/events/{{this.id}}">{{this.name}}</a></li>
+            </ul>
+        {{/each}}
+        {{/if}}
+
+        {{#unless events}}
+            <h4>There are no upcoming events</h4>
+        {{/unless}}
+
+    </div>
+
 </div>
     
