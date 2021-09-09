@@ -1,10 +1,10 @@
-document.getElementById('delete-participant-btn')
+document.getElementById('deleteParticipantBtn')
 .addEventListener('click', async function(event) {
     event.preventDefault();
-    let data = document.getElementById('delete-event-btn');
+    let eventId = this.dataset.eventId;
+    let participantId = this.dataset.participantId;
 
-
-    let url = '/api' + window.location.pathname + 'delete';
+    let url = `/api/events/${eventId}/participants/${participantId}/delete`;
 
     try {
         let response = await fetch(url, {

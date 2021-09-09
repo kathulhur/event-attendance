@@ -1,45 +1,41 @@
 const mongoose = require('mongoose');
-const EventModel = require('../../models/Event');
-const modelUtil = require('../../utils/modelUtil');
+const Event = require('../../models/Event');
 const db = require('../../lib/db');
 
 exports.api = {
     GET_events: async function (req, res) {
         try {
-            let events = await db.event.getEvents();// get all the event records
+            let events = await Event.find();// get all the event records
             if (events.length == 0) {
-                res.json({ msg: "GET: Empty data."});
+                return res.json({ msg: "GET: Empty data."});
             }else if (events) {// if there are results, filter the data to be passed
-                res.json(db.event.filterEvents(events));// return the filtered result
+                return res.json(db.event.filterEvents(events));// return the filtered result
 
             } else {
-                res.json({ msg: "GET: Something went wrong"});// No data in the database
+                return res.json({ msg: "GET: Something went wrong"});// No data in the database
             }
         } catch(err) {
-            res.status(500).json({ msg: "Server error, please try again after a while."});// Server error
+            return res.status(500).json({ msg: "Server error, please try again after a while."});// Server error
         }
     },
 
     GET_event: async function (req, res) {
-        let eventId; 
-        try { // check the validity of id
-            eventId = db.validateId(req.params.eventId);
-        } catch (err) {
-            console.error("Error: " + err);
-            res.status(400).json({ msg: "GET: InvalidID."})
-        }
-
-        try {
-            let event = await db.event.getEventById(eventId);// get all the event records
-
-            if(event) {// if there are results, filter the data to be passed
-                res.json(db.event.filterEvent(event));// return the filtered result
-            } else {
-                res.status(404).json({ msg: "GET: Data not found."});// No data in the database
+        if(!db.isValidMongoId(req.params.eventId)){
+            try {
+                let event = await db.event.getEventById(eventId);// get all the event records
+    
+                if(event) {// if there are results, filter the data to be passed
+                    return res.json(db.event.filterEvent(event));// return the filtered result
+                } else {
+                    return res.status(404).json({ msg: "GET: Data not found."});// No data in the database
+                }
+            } catch(err) {
+                return res.status(500).json({ msg: "GET: Server error, please try again after a while."});// Server error
             }
-        } catch(err) {
-            res.status(500).json({ msg: "GET: Server error, please try again after a while."});// Server error
+        } else {
+            return res.status(400).json({ msg: "GET: Invalid ID."});
         }
+
     },
 
     POST_eventForm: async function (req, res) {
@@ -81,27 +77,25 @@ exports.api = {
 
     DELETE_event: async function (req, res) {
         let eventId;
-        try {
-            eventId = db.validateId(req.params.eventId);
-        } catch(err) {
-            console.error(err);
-            res.status(400).json({ msg: "DELETE: Invalid Id"});
+        if(db.isValidMongoId(req.params.eventId)) {
+            try {
+                let event = await db.event.deleteEventById(eventId);
+                if(event) {
+                    res.json({ 
+                        msg: "DELETE: Success",
+                        event: db.event.filterEvent(event)
+                    });
+                } else {
+                    res.status(404).json({msg: "Event not found."});
+                }
+            } catch (err) {
+                console.log("Error: " + err);
+                res.status(500).json({ msg: "DELETE: Deletion failed."});
+            }
+        } else {
+            res.status(404).json({msg: "Invalid Id"});
         }
 
-        try {
-            let event = await db.event.deleteEventById(eventId);
-            if(event) {
-                res.json({ 
-                    msg: "DELETE: Success",
-                    event: db.event.filterEvent(event)
-                });
-            } else {
-                res.status(404).json({msg: "Event not found."});
-            }
-        } catch (err) {
-            console.log("Error: " + err);
-            res.status(500).json({ msg: "DELETE: Deletion failed."});
-        }
     }
 }
 

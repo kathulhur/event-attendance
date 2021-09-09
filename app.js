@@ -23,12 +23,11 @@ mongodb.connect();
 // Router imports
 const indexRouter           = require('./routes/index');
 const usersRouter           = require('./routes/user');
-const participantsRouter    = require('./routes/participant');
-const eventsRouter          = require('./routes/events')
 const eventsRouterAPI       = require('./routes/api/event');
 const participantsRouterAPI = require('./routes/api/participant');
+const adminRouter           = require('./routes/admin');
 
-
+const auth                  = require('./lib/auth');
 
 
 // view engine setup
@@ -59,7 +58,7 @@ app.use(passport.session());
 // Connect-flash
 app.use(flash());
 app.use(function (req, res, next) {
-  res.locals.success_msgs = req.flash('success_msg');
+  res.locals.success_msgs = req.flash('success_msgs');
   res.locals.error_msgs = req.flash('error_msgs');
   res.locals.info_msgs = req.flash('info_msgs');
   next();
@@ -69,10 +68,10 @@ app.use(function (req, res, next) {
 app.use(express.static(path.join(__dirname, 'public')));// static route
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/events', eventsRouter);
-app.use('/events', participantsRouter);
 app.use('/api/events', eventsRouterAPI);
 app.use('/api/events', participantsRouterAPI);
+app.use('/admin', auth.ensureAuthenticatedAdmin, adminRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

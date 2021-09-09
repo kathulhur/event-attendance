@@ -12,8 +12,9 @@ router.get('/', function(req, res, next) {
 router.get('/login', function(req, res, next) {
   res.render('login');
 });
-
 router.post('/login', userHandler.login);
+
+router.get('/logout', userHandler.logout);
 
 router.get('/register', function(req, res) {
   res.render('register');

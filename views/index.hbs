@@ -1,6 +1,12 @@
 <div id="page-container">
     <a href="/">Organization Name</a>
-    <a href="/users/login">Login</a>
+    {{#if user.isAuthenticated}}
+        <a href="/users/{{user.id}}">{{user.name}}</a>
+        <a href="/users/logout">Logout</a>
+    {{/if}}
+    {{#unless user.isAuthenticated }}
+        <a href="/users/login">Login</a>
+    {{/unless}}
     <a href="/users/register">Sign up</a>
 </div>
     

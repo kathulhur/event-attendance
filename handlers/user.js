@@ -55,7 +55,14 @@ async function hashPassword(password) {
 
 exports.login = function (req, res, next) {
     passport.authenticate('local', {
-        successRedirect: '/dashboard',
+        successRedirect: '/',
         failureRedirect: '/users/login',
       })(req, res, next);
-}
+};
+
+// Logout Handle
+exports.logout = function (req, res) {
+    req.logout();
+    req.flash('success_msgs', 'You are logged out');
+    res.redirect('/users/login');
+};

@@ -4,11 +4,16 @@ const auth = require('../lib/auth');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  let user = false;
+  if(req.user) {
+    user = {
+      id: req.user.id,
+      name: req.user.name,
+      isAuthenticated: req.isAuthenticated()
+    }
+  }
+  res.render('index', { user: user });
 });
 
-router.get('/dashboard', auth.ensureAuthenticated, function(req, res) {
-  return res.render('dashboard');
-});
 
 module.exports = router;

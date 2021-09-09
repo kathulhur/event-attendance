@@ -1,13 +1,12 @@
 const mongoose          = require('mongoose');
 const ParticipantModel  = require('../../models/Participant');
 const EventModel        = require('../../models/Event');
-const modelUtil         = require('../../utils/modelUtil');
 const db                = require('../../lib/db');
 
 exports.api = {
     GET_participants: async function (req, res) {
         try { // fetch participants
-            let participants = await db.participant.getParticipants();
+            let participants = await Participants.find();
             if (participants.length == 0) {// if no data
                 res.json({ msg: "GET: No available data."});
             } else if (participants) {// if there are result
@@ -46,30 +45,26 @@ exports.api = {
 
     POST_participant : async function (req, res) {
         let eventId;
-        try {// check if the id is valid
-            eventId = db.validateId(req.params.eventId);
-            req.body.eventId = eventId;// add the object id to the body for the filter
-        } catch(err) {// invalid id
+        if(eventId = req.body.eventId = db.isValidMongoId(req.params.eventId)) {
+            try {// find the event
+                let event = await db.event.getEventById(eventId);
+                if(event){// if event found, create the save the participant
+                    let newParticipant = db.participant.createParticipant(req.body);
+                    let participant = await newParticipant.save();
+                    res.json(db.participant.filterParticipant(participant));
+                    
+                } else { //otherwise, return event not found
+                    res.status(404).json({ msg: "POST: Event not found"});
+                }
+            } catch(err) {// failed retrieving the event
+                console.log("Error: " + err);
+                res.status(500).json({ msg: "An error occured while saving the data."});
+            }
+        } else {
             console.error(err);
-            res.status(400).json({ msg: "POST: Invalid event ID"});
-            return;
+            return res.status(400).json({ msg: "POST: Invalid event ID"});
         }
 
-        try {// find the event
-            let event = await db.event.getEventById(eventId);
-            
-            if(event){// if event found, create the save the participant
-                let newParticipant = db.participant.createParticipant(req.body);
-                let participant = await newParticipant.save();
-                res.json(db.participant.filterParticipant(participant));
-                
-            } else { //otherwise, return event not found
-                res.status(404).json({ msg: "POST: Event not found"});
-            }
-        } catch(err) {// failed retrieving the event
-            console.log("Error: " + err);
-            res.status(500).json({ msg: "An error occured while saving the data."});
-        }
     },
 
     DELETE_participant: async function(req, res) {
@@ -88,8 +83,8 @@ exports.api = {
             let deletedParticipant = await db.participant.deleteParticipantById(participantId);
             if(deletedParticipant){
                 res.json({ 
-                        msg: "DELETE: Success"
-                    
+                        msg: "DELETE: Success",
+                        participant: db.participant.filterParticipant(deletedParticipant)
                     });
             } else {
                 res.status(404).json({ msg: "DELETE: Participant not found."});s
