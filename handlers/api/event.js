@@ -86,11 +86,13 @@ exports.api = {
         let eventId;
         if(eventId = db.isValidMongoId(req.params.eventId)) {
             try {
-                let event = await Event.findByIdAndDelete(eventId);
-                if(event) {
-                    res.json({ 
+                let deletedDocuments = await db.event.deleteEventById(eventId);
+                console.log(deletedDocuments);
+                if(deletedDocuments) {
+                    res.json({
                         msg: "DELETE: Success",
-                        event: db.event.filterEvent(event)
+                        event: db.event.filterEvent(deletedDocuments.event),
+                        participants: deletedDocuments.participants,
                     });
                 } else {
                     res.status(404).json({msg: "Event not found."});

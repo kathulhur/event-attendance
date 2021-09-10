@@ -8,16 +8,13 @@ const db = require('../lib/db');
 router.get('/', async function(req, res, next) {
   let user = false;
   if(req.user) {
-    user = {
-      id: req.user.id,
-      name: req.user.name,
-      isAuthenticated: req.isAuthenticated()
-    }
+    user = req.user;
   }
-  let events = await Event.find().limit(3);
+  
+  let events = await db.event.getLatestEvent();
 
   return res.render('index', { 
-    user: user,
+    user: db.user.filterUser(user, req.isAuthenticated()),
     events: db.event.filterEvents(events)
   });
 

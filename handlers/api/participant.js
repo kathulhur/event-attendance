@@ -23,24 +23,26 @@ exports.api = {
 
     GET_eventParticipants: async function(req, res) {
         let eventId;;
-        try {// checks whether the id is valid mongodb ObjectId
-            eventId = db.validateId(req.params.eventId);
-        } catch (err) {
-            res.status(400).json({ msg: "Invalid event ID"});
-        }
-
-        try {// fetch the participants data
-            let participants = await db.event.getEventParticipants(eventId);
-            if(participants.length != 0) {
-                res.json(db.participant.filterParticipants(participants));
-            } else {
-                res.status(404).json({ msg: "GET: No participants found."});
+  
+        if(db.validateId(req.params.eventId)){
+            try {// fetch the participants data
+                let participants = await db.event.getEventParticipants(eventId);
+                if(participants.length != 0) {
+                    return res.json({
+                        participants: db.participant.filterParticipants(participants)
+                    });
+                } else {
+                    return res.status(404).json({ msg: "GET: No participants found."});
+                }
+            } catch(err) {
+                console.error(err);
+                return res.status(500).json({ msg: "GET: Error querying the database."});
             }
-            
-        } catch(err) {
-            console.error(err);
-            res.status(500).json({ msg: "GET: Error querying the database."});
+        } else {
+            res.status(400).json({ msg: "Invalid Id"});
         }
+        
+
     },
 
     POST_participant : async function (req, res) {
@@ -79,7 +81,7 @@ exports.api = {
 
         if((participantId = db.isValidMongoId(req.params.participantId)) && (eventId = db.isValidMongoId(req.params.eventId))){
             try { // delete the object
-                let deletedParticipant = await Participant.findByIdAndDelete(participantId);
+                let deletedParticipant = await db.participant.deleteParticipant(participantId, eventId);
                 if(deletedParticipant){
                     await Event.findByIdAndUpdate(eventId, {
                         $inc: {

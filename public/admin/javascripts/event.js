@@ -33,6 +33,7 @@ async function editEvent(event) {
     let body = JSON.stringify({
         id: id,
         name: event.target.elements.name.value,
+        status: event.target.elements.status.value,
         start: event.target.elements.start.value,
         end: event.target.elements.end.value
     });

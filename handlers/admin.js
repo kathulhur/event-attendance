@@ -58,7 +58,8 @@ exports.eventEditForm = async function (req, res, next) {
                 slug: event.slug,
                 name: event.name,
                 start: db.toDatetimeLocal(event.start),
-                end: db.toDatetimeLocal(event.end)
+                end: db.toDatetimeLocal(event.end),
+                status: event.status,
             }
             return res.render('admin/eventEdit', { event: fEvent });
         } else {
