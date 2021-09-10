@@ -6,7 +6,7 @@ const logger      = require('morgan');
 const exphbs      = require('express-handlebars');
 const session     = require('express-session');
 const flash       = require('connect-flash');
-
+const db          = require('./lib/db');
 // passport configuration
 const passport = require('passport')
 require('./lib/auth').configure(passport);// load passport strategies and serializers
@@ -29,9 +29,18 @@ const adminRouter           = require('./routes/admin');
 
 const auth                  = require('./lib/auth');
 
+const hbs = exphbs.create({
+  extname: '.hbs',
+  helpers: {
+    displayIfAvailable: function(data) {
+      return data ? data : '';
+    }
+  }
+});
+
 
 // view engine setup
-app.engine('.hbs', exphbs({ extname: '.hbs'}));
+app.engine('.hbs', hbs.engine);
 app.set('view engine', '.hbs');
 
 
@@ -52,15 +61,17 @@ app.use(session({
   saveUninitialized: true,
 }));
 
+app.use(flash());
 // Passport Middleware
 app.use(passport.initialize());
 app.use(passport.session());
 // Connect-flash
-app.use(flash());
 app.use(function (req, res, next) {
   res.locals.success_msgs = req.flash('success_msgs');
   res.locals.error_msgs = req.flash('error_msgs');
   res.locals.info_msgs = req.flash('info_msgs');
+  res.locals.error = req.flash('error');
+  res.locals.user = db.user.getUser(req);
   next();
 });
 

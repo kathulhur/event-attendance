@@ -5,17 +5,17 @@
         {{> messages }}
         <div class="mb-3 w-100">
             <label class="form-label" for="fieldName">Name</label>
-            <input class="form-control" id="fieldName" name="name" type="text" placeholder="John Doe">
+            <input class="form-control" id="fieldName" name="name" type="text" placeholder="John Doe" value="{{displayIfAvailable body.name}}">
         </div>
 
         <div class="mb-3 w-100">
             <label class="form-label" for="fieldEmail">Email</label>
-            <input class="form-control" id="fieldEmail" name="email" type="email" placeholder="johndoe@email.com">
+            <input class="form-control" id="fieldEmail" name="email" type="email" placeholder="johndoe@email.com" value="{{displayIfAvailable body.email}}">
         </div>
 
         <div class="mb-3">
             <label class="form-label" for="fieldPassword">Password</label>
-            <input class="form-control" id="fieldPassword" name="password" type="password" placeholder="password">
+            <input class="form-control" id="fieldPassword" name="password" type="password" placeholder="password" value="{{displayIfAvailable body.password}}">
         </div>
 
         <div id="error-container" class="mb-3"></div>

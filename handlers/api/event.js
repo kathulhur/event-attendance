@@ -5,16 +5,13 @@ const db = require('../../lib/db');
 exports.api = {
     GET_events: async function (req, res) {
         try {
-            let events = await Event.find();// get all the event records
-            if (events.length == 0) {
-                return res.json({ msg: "GET: Empty data."});
-            }else if (events) {// if there are results, filter the data to be passed
-                return res.json({
+            let events = await db.event.getEvents();// get all the event records
+            if (events) {
+                return res.json({// return the filtered result
                     event: db.event.filterEvents(events)
-                });// return the filtered result
-
-            } else {
-                return res.json({ msg: "GET: Something went wrong"});// No data in the database
+                });
+            } else {// if there are no records
+                return res.json({ msg: "GET: Empty data."});
             }
         } catch(err) {
             return res.status(500).json({ msg: "Server error, please try again after a while."});// Server error
@@ -28,7 +25,7 @@ exports.api = {
     
                 if(event) {// if there are results, filter the data to be passed
                     return res.json({
-                        event: db.event.filterEvent(event)
+                        event: event
                     });// return the filtered result
                 } else {
                     return res.status(404).json({ msg: "GET: Data not found."});// No data in the database
@@ -60,13 +57,11 @@ exports.api = {
         let eventId;
 
         if(eventId = db.isValidMongoId(req.body.id)){
-            try {//
-                let event = await Event.findById(eventId);
-                console.log(event);
+            try {
+                let event = await db.event.updateEventById(req.body);
                 if(event) {
-                    let event = await db.event.updateEventById(req.body);
                     return res.json({
-                        event: db.event.filterEvent(event)
+                        event: event
                     });
                 } else {
                     return res.status(404).json({msg: "PUT: No record match."});
@@ -87,11 +82,10 @@ exports.api = {
         if(eventId = db.isValidMongoId(req.params.eventId)) {
             try {
                 let deletedDocuments = await db.event.deleteEventById(eventId);
-                console.log(deletedDocuments);
                 if(deletedDocuments) {
                     res.json({
                         msg: "DELETE: Success",
-                        event: db.event.filterEvent(deletedDocuments.event),
+                        event: deletedDocuments.event,
                         participants: deletedDocuments.participants,
                     });
                 } else {

@@ -1,13 +1,15 @@
 const db = require('../lib/db');
 const Participant = require('../models/Participant');
+
 exports.index = function(req, res) {
-    res.render('admin/dashboard', { name: req.user.name });
+    let user = db.user.getUser(req);
+    res.render('admin/dashboard', { name: user });
 }
 
 exports.events = async function(req, res, next) {
     try {
         let events = await db.event.getEvents();
-        res.render('admin/events', { events: db.event.filterEvents(events) });
+        res.render('admin/events', { events: events });
     } catch(err) {
         console.error("Error [/events]: " + err);
         return next(err);
@@ -15,15 +17,14 @@ exports.events = async function(req, res, next) {
 }
 
 exports.eventForm = function(req, res) {
-    return res.render('admin/eventCreate');
+    return res.render('admin/eventCreate');// render event form
 }
 
-exports.eventSubmit = async function(req, res) {
-    try {
-        let newEvent = db.event.createEvent(req.body);
-        await newEvent.save();
+exports.eventSubmit = async function(req, res, next) {
+    try {// submit event form
+        let newEvent = await db.event.createEvent(req.body);
         return res.redirect(`/admin/events/${newEvent.slug}`);
-    } catch(err) {
+    } catch(err) {// on error
         console.error("Error [/events/create] " + err);
         return next(err);
     }
@@ -33,17 +34,17 @@ exports.event = async function (req, res, next) {
 
     try {// check the event if it exist
         let event = await db.event.getEventBySlug(req.params.eventSlug);
-        if(event){
-            let participants = await db.event.getEventParticipants(event._id);
+        if(event) {// event found, render
+            let participants = await db.event.getEventParticipants(event.id);
             res.render('admin/event', 
             { 
-                event: db.event.filterEvent(event),
-                participants: db.participant.filterParticipants(participants)
+                event: event,
+                participants: participants
             });
-        } else {
-            next(new Error("Event does not exist"));
+        } else {// event not found
+            next(new Error('Event does not exist'));
         }
-    } catch (err) {
+    } catch (err) {// on error
         console.error('Error [/events/:eventSlug] ' + err);
         next(new Error("Server Error"));
     }
@@ -52,9 +53,9 @@ exports.event = async function (req, res, next) {
 exports.eventEditForm = async function (req, res, next) {
     try {
         let event = await db.event.getEventBySlug(req.params.eventSlug);
-        if(event) {
+        if(event) {// event found, render form
             let fEvent = {
-                id: event._id,
+                id: event.id,
                 slug: event.slug,
                 name: event.name,
                 start: db.toDatetimeLocal(event.start),
@@ -62,11 +63,11 @@ exports.eventEditForm = async function (req, res, next) {
                 status: event.status,
             }
             return res.render('admin/eventEdit', { event: fEvent });
-        } else {
+        } else {// event not found
             next(new Error('Event not found'));
         }
-    } catch(err) {
-        console.error('Error: [/events/:eventId/edit] ' + err);
+    } catch(err) {// on error
+        console.error('Error: [/events/:eventSlug/edit] ' + err);
         return next(err);
     }
 }
@@ -74,21 +75,28 @@ exports.eventEditForm = async function (req, res, next) {
 exports.participantForm = async function(req, res, next) {
     try{
         let event = await db.event.getEventBySlug(req.params.eventSlug);
-        return res.render('admin/participantCreate', { event: db.event.filterEvent(event) });
-    } catch {
-        console.error('Error [/events/:eventId/participants/create] ' + err);
+        if(event) {// event found, render form
+            return res.render('admin/participantCreate', { event: event });
+        } else {// event does not exist
+            return next(new Error("Event does not exist"));
+        }
+    } catch (err){// on error
+        console.error('Error [/events/:eventSlug/participants/create] ' + err);
         return next(err);
     }
 }
 
 exports.participantSubmit = async function(req, res, next) {
     try{
-        let newParticipant = db.participant.createParticipant(req.body);
-        await newParticipant.save();
-        await db.event.incrementEventParticipants(req.body.event);
-        return res.redirect(`/admin/events/${req.params.eventSlug}`);
-    } catch(err) {
-        console.error('Error [/events/:eventId/participants/create] ' + err);
+        let event = db.event.getEventById(req.body.event);
+        if(event) {// event found, create the participant and redirect
+            await db.participant.createParticipant(req.body, event);
+            return res.redirect(`/admin/events/${req.params.eventSlug}`);
+        } else {// event not found
+            return res.status(404).json({ msg: 'POST: Event does not exist '});
+        }
+    } catch(err) {// on error
+        console.error('Error [/events/:eventSlug/participants/create] ' + err);
         return next(err);
     }
 }
@@ -98,15 +106,15 @@ exports.participant = async function(req, res, next) {
     let eventSlug = req.params.eventSlug;
     try{
         let participant = await db.participant.getParticipant(participantSlug, eventSlug);
-        if(participant){
+        if(participant){// participant found, render
             return res.render('admin/participant', 
             { 
-                participant: db.participant.filterParticipant(participant),
+                participant: participant
             });
-        } else {
+        } else {// participant not found
             next(new Error('participant not found'))
         }
-    } catch(err) {
+    } catch(err) {// on error
         console.error("Error [/events/:eventSlug/participants/:participantSlug] " + err);
         return next(new Error("Server Error"));
     }
@@ -117,14 +125,14 @@ exports.participantEditForm = async function(req, res, next) {
         participantSlug = req.params.participantSlug;
     try{
         let participant = await db.participant.getParticipant(participantSlug, eventSlug);
-        if(participant) {
+        if(participant) {// participant found, render
             return res.render('admin/participantEdit', { 
-                participant: db.participant.filterParticipant(participant) 
+                participant: participant
             });
-        } else {
+        } else {// participant not found,
             return next(new Error('Participant not found'));
         }
-    } catch (err) {
+    } catch (err) {// On error
         console.error('Error [/events/:eventSlug/participants/:participantSlug/edit] ' + err);
         return next(err);
     }

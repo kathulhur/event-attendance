@@ -18,7 +18,7 @@ exports.register = async function(req, res) {
     }
 
     if(errors.length > 0) {// display errors
-        res.render('register', { errors: errors });
+        res.render('register', { body: req.body, errors: errors });
     } else {// register the user
 
         try {
@@ -57,6 +57,7 @@ exports.login = function (req, res, next) {
     passport.authenticate('local', {
         successRedirect: '/',
         failureRedirect: '/users/login',
+        failureFlash: true,
       })(req, res, next);
 };
 
