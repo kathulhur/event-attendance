@@ -108,7 +108,7 @@ exports.api = {
         
         if(db.isValidMongoId(req.body.id) && db.isValidMongoId(req.body.event)){
             try {
-                let updatedParticipant = await db.participant.updateParticipantById(req.body);
+                let updatedParticipant = await db.participant.updateParticipantById(req.body).populate('event').lean();
                 let event = await Event.findById(req.body.event);
                 
                 if(updatedParticipant) { // updated

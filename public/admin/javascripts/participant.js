@@ -17,7 +17,7 @@ async function deleteParticipant(eventId, participantId, redirect) {
     }
 };
 
-async function editParticipant(event, redirect) {
+async function editParticipant(event) {
     event.preventDefault();
     let eventId = event.target.elements.event.value,
         participantId = event.target.elements.id.value;
@@ -43,8 +43,7 @@ async function editParticipant(event, redirect) {
 
         if(response.ok){
             let res = await response.json();    
-            console.log(res);
-            window.location.replace(redirect);
+            window.location.replace(`/admin/events/${res.participant.event.slug}/participants/${res.participant.slug}`);
         } else {
             alert("Edit failed");
         }

@@ -4,7 +4,7 @@
 <p>{{participant.course}} - {{participant.institution}}</p>
 <p>registered: {{participant.registered}}</p>
 
-<a href="/admin/events/{{participant.event}}/participants/{{participant.slug}}/edit">Edit</a>
+<a href="/admin/events/{{participant.event.slug}}/participants/{{participant.slug}}/edit">Edit</a>
 <button onclick="deleteParticipant('{{participant.event.id}}', '{{participant.id}}', '/admin/events/{{participant.event.slug}}')">Delete</button>
 
 <script src="/admin/javascripts/participant.js"></script>
