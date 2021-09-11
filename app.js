@@ -57,8 +57,8 @@ app.use(express.json());
 //Express Session
 app.use(session({
   secret: process.env.cookieSecret,
-  resave: true,
-  saveUninitialized: true,
+  resave: false,
+  saveUninitialized: false,
 }));
 
 app.use(flash());

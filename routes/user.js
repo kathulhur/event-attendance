@@ -9,16 +9,13 @@ router.get('/', function(req, res, next) {
 });
 
 // Get login form
-router.get('/login', function(req, res, next) {
-  res.render('login');
-});
+router.get('/login', userHandler.loginForm);
+
 router.post('/login', userHandler.login);
 
 router.get('/logout', userHandler.logout);
 
-router.get('/register', function(req, res) {
-  res.render('register');
-});
+router.get('/register', userHandler.registrationForm);
 
 router.post('/register', userHandler.register);
 

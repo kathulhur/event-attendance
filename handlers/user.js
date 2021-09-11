@@ -3,6 +3,14 @@ const mongoose = require('mongoose');
 const User = require('../models/User');
 const bcrypt = require("bcryptjs");
 
+exports.loginForm = function(req, res, next) {
+    res.render('user/login');
+}
+
+exports.registrationForm = function(req, res) {
+    res.render('user/register');
+}
+
 exports.register = async function(req, res) {
     let errors = [];
     if(!req.body.name || !req.body.email || !req.body.password) {
@@ -18,7 +26,7 @@ exports.register = async function(req, res) {
     }
 
     if(errors.length > 0) {// display errors
-        res.render('register', { body: req.body, errors: errors });
+        res.render('user/register', { body: req.body, errors: errors });
     } else {// register the user
 
         try {
@@ -35,7 +43,7 @@ exports.register = async function(req, res) {
         } catch (err) {
             console.error("Error: " + err);
             errors.push("Server error, Please try again later")
-            return res.render('register', {errors: errors});
+            return res.render('user/register', {errors: errors});
         }
         
     }
