@@ -34,7 +34,10 @@ const hbs = exphbs.create({
   helpers: {
     displayIfAvailable: function(data) {
       return data ? data : '';
-    }
+    },
+    hasEnded: function(status) {
+      return status === 'ended';
+    },
   }
 });
 
