@@ -4,9 +4,11 @@ const createError = require('http-errors');
 const path        = require('path');
 const logger      = require('morgan');
 const exphbs      = require('express-handlebars');
+const expressLayouts = require('express-ejs-layouts');
 const session     = require('express-session');
 const flash       = require('connect-flash');
 const db          = require('./lib/db');
+
 // passport configuration
 const passport = require('passport')
 require('./lib/auth').configure(passport);// load passport strategies and serializers
@@ -29,22 +31,11 @@ const adminRouter           = require('./routes/admin');
 
 const auth                  = require('./lib/auth');
 
-const hbs = exphbs.create({
-  extname: '.hbs',
-  helpers: {
-    displayIfAvailable: function(data) {
-      return data ? data : '';
-    },
-    hasEnded: function(status) {
-      return status === 'ended';
-    },
-  }
-});
-
 
 // view engine setup
-app.engine('.hbs', hbs.engine);
-app.set('view engine', '.hbs');
+app.set('view engine', 'ejs');
+app.set('layout', 'layouts/layout');
+app.use(expressLayouts);
 
 
 app.use(logger('dev'));

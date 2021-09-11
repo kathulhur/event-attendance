@@ -1,0 +1,68 @@
+<%- include('./partials/navbar'); %>
+<a href="/">back</a>
+<div class="container" id="mainContainer">
+
+    <div class="container my-4" id="incomingEvents">
+        <h1 class="text-center">INCOMING EVENTS</h1>
+        <% for(let i = 0; i < incomingEvents.length; ++i) { %>
+            <% if((i+1) % 3 === 1) { %>
+            <div class="row">
+            <% }; %>
+
+                <div class="col-4 p-0 mb-4">
+                    <div class="container">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h3 class="card-title"><%= incomingEvents[i].name %></h3>
+                                <p class="card-text small text-start">Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus praesentium obcaecati, aspernatur deserunt dicta assumenda cum optio? Quasi, nesciunt, eum, vel dolorum odit sapiente natus aut dolores accusantium totam aliquid?</p>
+                                <a href="/events/<%= incomingEvents[i].slug %>" class="link-success">See more</a>
+                            </div>
+                            <div class="card-footer text-muted">
+                                <b><%= incomingEvents[i].start.toDateString() %></b>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            <% if((i+1) % 3 === 0) { %>
+            </div>
+            <% }; %>
+        <% }; %>
+        
+        <% if (incomingEvents.length != 0 && incomingEvents.length % 3 === 0) { %>
+        </div>
+        <% }; %>
+    </div>
+    
+    <div class="container my-4" id="pastEvents">
+        <h1 class="text-center">Past Events</h1>
+        <% for(let i = 0; i < pastEvents.length; ++i) { %>
+            <% if((i+1) % 2 === 1) { %>
+            <div class="row">
+            <% }; %>
+
+                <div class="col-4 p-0 mb-4">
+                    <div class="container">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h3 class="card-title"><%= pastEvents[i].name %></h3>
+                                <p class="card-text text-start">Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus praesentium obcaecati, aspernatur deserunt dicta assumenda cum optio? Quasi, nesciunt, eum, vel dolorum odit sapiente natus aut dolores accusantium totam aliquid?</p>
+                                <a href="/events/<%= pastEvents[i].slug %>" class="link-success">See more</a>
+                            </div>
+                            <div class="card-footer text-muted">
+                                <b><%= pastEvents[i].start.toDateString() %></b>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            <% if((i+1) % 2 === 0) { %>
+            </div>
+            <% }; %>
+        <% }; %>
+        
+        <% if (pastEvents.length != 0 && pastEvents.length % 3 === 0) { %>
+        </div>
+        <% }; %>
+    </div>
+</div>
