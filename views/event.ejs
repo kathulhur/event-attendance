@@ -1,7 +1,11 @@
 <%- include('./partials/navbar'); %>
-<a href="/events">back</a>
+<a href="/events">
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="dark" class="bi bi-arrow-return-left mt-3 ms-3" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5z"/>
+    </svg>
+</a>
 
-<div id="main-container" class="container my-5">
+<div id="main-container" class="container">
 
     <div class="row">
         
@@ -24,21 +28,22 @@
             <p class="small">Please checkout incoming events <a href="/events">here</a></p>
         <% } else { %>
                 <h2 class="text-center">Register Now!</h2>
-                <form action="/admin/events/<%= event.slug %>/participants/create" method="post">
+                <%- include('./partials/messages') %> 
+                <form action="/events/<%= event.slug %>" method="post">
                     <input type="hidden" name="event" value="<%= event.id ? event.id : form.event %>">
 
                     <label class="form-label" for="fieldName">Name</label>
-                    <input class="form-control" id="fieldName" type="text" name="name" value="<%= typeof form !== 'undefined' ? form.name : '' %>">
+                    <input class="form-control" id="fieldName" type="text" name="name" value="<%= typeof form !== 'undefined' ? form.name : '' %>" required>
                     <div id="emailHelp" class="form-text mb-3">This name will used in the certificate</div>
 
                     <label class="form-label" for="fieldAge">Age</label>
-                    <input class="form-control mb-3" id="fieldAge" type="number" name="age" value="<%= typeof form !== 'undefined' ? form.age : '' %>">
+                    <input class="form-control mb-3" id="fieldAge" type="number" name="age" value="<%= typeof form !== 'undefined' ? form.age : '' %>" required>
 
                     <label class="form-label" for="fieldCourse">Course</label>
-                    <input class="form-control mb-3" id="fieldCourse" type="text" name="course" value="<%= typeof form !== 'undefined' ? form.course : '' %>">
+                    <input class="form-control mb-3" id="fieldCourse" type="text" name="course" value="<%= typeof form !== 'undefined' ? form.course : '' %>" required>
 
                     <label class="form-label" for="fieldInstitution">Institution</label>
-                    <input class="form-control mb-3" id="fieldInstitution" type="text" name="institution" value="<%= typeof form !== 'undefined' ? form.institution : '' %>">
+                    <input class="form-control mb-3" id="fieldInstitution" type="text" name="institution" value="<%= typeof form !== 'undefined' ? form.institution : '' %>" required>
 
                     <input class="btn btn-outline-dark" type="submit" value="Register">
                 </form>

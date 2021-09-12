@@ -1,0 +1,26 @@
+<%- include('../partials/navbar'); %>
+<a href="/admin/events">back</a>
+<h1><%= event.name %> - [<%= event.status %>]</h1>
+<p>participants: <%= event.participants %></p>
+<p>START - <%= event.start %></p>
+<p>END - <%= event.end %></p>
+<a href="/admin/events/<%= event.slug %>/edit">Edit</a>
+<button onclick="deleteEvent('<%= event.id %>', '/admin/events')">Delete</button>
+<div id="error-container"></div>
+<ol>
+    <% if(participants) {%>
+        <% participants.forEach(function (participant) { %>
+    <li>
+        <a href="/admin/events/<%= event.slug %>/participants/<%= participant.slug %>"><%= participant.name %></a>
+        <button onclick="deleteParticipant('<%= event.id %>', '<%= participant.id %>', '/admin/events/<%= event.slug %>')">delete</button>
+    </li>
+        <% }); %>
+    <% } else { %>
+        <p>No participants</p>
+    <% }; %>
+</ol>
+
+<a href="/admin/events/<%= event.slug %>/participants/create">Add</a>
+
+<script src="/admin/javascripts/event.js"></script>
+<script src="/admin/javascripts/participant.js"></script>

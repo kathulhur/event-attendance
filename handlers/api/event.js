@@ -8,7 +8,7 @@ exports.api = {
             let events = await db.event.getEvents();// get all the event records
             if (events) {
                 return res.json({// return the filtered result
-                    event: db.event.filterEvents(events)
+                    event: events
                 });
             } else {// if there are no records
                 return res.json({ msg: "GET: Empty data."});

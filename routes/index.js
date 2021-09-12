@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const Event = require('../models/Event');
-const auth = require('../lib/auth');
+const indexHandler = require('../handlers/index');
 const db = require('../lib/db');
 
 
@@ -32,9 +31,12 @@ router.get('/events', async function(req, res) {
 
 router.get('/events/:eventSlug', async function(req, res) {
     let event = await db.event.getEventBySlug(req.params.eventSlug);
+    console.log(event);
     res.render('event', {event: event});
 
 });
+
+router.post('/events/:eventSlug', indexHandler.register);
 
 
 module.exports = router;

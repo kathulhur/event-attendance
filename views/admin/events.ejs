@@ -1,0 +1,13 @@
+<%- include('../partials/navbar'); %>
+<a href="/admin">back</a>
+<h1>Events</h1>
+<ul>
+    <% if(events) {%>
+        <% events.forEach(function (event) { %>
+        <li>
+            <a href="/admin/events/<%= event.slug %>"><%= event.name %></a>
+        </li>
+        <% }) %>
+    <% }; %>
+</ul>
+<a href="/admin/events/create">Add event</a>

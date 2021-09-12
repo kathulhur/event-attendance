@@ -1,0 +1,22 @@
+<%- include('../partials/navbar'); %>
+<form id="participantEditForm" onsubmit="editParticipant(event)">
+
+    <input type="hidden" name="id" value="<%= participant.id %>">
+    <input type="hidden" name="event" value="<%= participant.event.id %>">
+
+    <label for="fieldName">Name</label>
+    <input id="fieldName" type="text" name="name" value="<%= participant.name %>">
+
+    <label for="fieldAge">Age</label>
+    <input id="fieldAge" type="number" name="age" value="<%= participant.age %>">
+
+    <label for="fieldCourse">Course</label>
+    <input id="fieldCourse" type="text" name="course" value="<%= participant.course %>">
+
+    <label for="fieldInstitution">Institution</label>
+    <input id="fieldInstitution" type="text" name="institution" value="<%= participant.institution %>">
+
+    <input type="submit">
+</form>
+
+<script src="/admin/javascripts/participant.js"></script>

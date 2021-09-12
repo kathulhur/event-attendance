@@ -1,8 +1,8 @@
-{{> navbar }}
-<a href="/admin/events/{{event.slug}}">back</a>
-<form action="/admin/events/{{event.slug}}/participants/create" method="post">
+<%- include('../partials/navbar'); %>
+<a href="/admin/events/<%= event.slug %>">back</a>
+<form action="/admin/events/<%= event.slug %>/participants/create" method="post">
 
-    <input type="hidden" name="event" value="{{event.id}}">
+    <input type="hidden" name="event" value="<%= event.id %>">
 
     <label for="fieldName">Name</label>
     <input id="fieldName" type="text" name="name">
