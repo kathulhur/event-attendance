@@ -1,18 +1,18 @@
 <%- include('./partials/navbar'); %> 
 <div class="main-container">
 
-    <div id="incomingEvents" class="container mt-5">
-        <% if(events){ %>
+    <div id="ongoingEvents" class="container my-5 border border-dark rounded-3 p-4">
+        <% if(ongoingEvents){ %>
         <div class="row">
             <div class="col-3 d-flex flex-column justify-content-center">
                 <div>
-                    <h1>Upcoming Events</h1>
+                    <h1>Ongoing Events</h1>
                 </div>
                 <div>
-                    <a href="/events" class="link-success">See all events</a>
+                    <a href="/events/ongoing" class="link-success">See all ongoing events</a>
                 </div>
             </div>
-            <% events.forEach(function(event){ %>
+            <% ongoingEvents.forEach(function(event){ %>
                 <div class="col">
                     <div class="card text-center">
                         <div class="card-body">
@@ -29,7 +29,71 @@
         </div>
 
         <% } else { %>
-            <h4>There are no upcoming events</h4>
+            <h4 class="text-center">There are no ongoing events</h4>
+        <% } %>
+    </div>
+
+    <div id="incomingEvents" class="container my-5 border border-dark rounded-3 p-4">
+        <% if(incomingEvents){ %>
+        <div class="row">
+            <div class="col-3 d-flex flex-column justify-content-center">
+                <div>
+                    <h1>Upcoming Events</h1>
+                </div>
+                <div>
+                    <a href="/events/incoming" class="link-success">See all incoming events</a>
+                </div>
+            </div>
+            <% incomingEvents.forEach(function(event){ %>
+                <div class="col">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= event.name %></h5>
+                            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                            <a href="/events/<%= event.slug %>" class="btn btn-outline btn-outline-success">See more</a>
+                        </div>
+                        <div class="card-footer text-muted">
+                            <%= event.start.toDateString() %>
+                        </div>
+                    </div>
+                </div>
+            <% });%>
+        </div>
+
+        <% } else { %>
+            <h4 class="text-center">There are no upcoming events</h4>
+        <% } %>
+    </div>
+
+    <div id="pastEvents" class="container my-5 border border-dark rounded-3 p-4">
+        <% if(pastEvents){ %>
+        <div class="row">
+            <div class="col-3 d-flex flex-column justify-content-center">
+                <div>
+                    <h1>Past Events</h1>
+                </div>
+                <div>
+                    <a href="/events/past" class="link-success">See all past events</a>
+                </div>
+            </div>
+            <% pastEvents.forEach(function(event){ %>
+                <div class="col">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= event.name %></h5>
+                            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                            <a href="/events/<%= event.slug %>" class="btn btn-outline btn-outline-success">See more</a>
+                        </div>
+                        <div class="card-footer text-muted">
+                            <%= event.start.toDateString() %>
+                        </div>
+                    </div>
+                </div>
+            <% });%>
+        </div>
+
+        <% } else { %>
+            <h4 class="text-center">There are no upcoming events</h4>
         <% } %>
     </div>
 
