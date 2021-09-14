@@ -24,7 +24,7 @@ router.get('/events', async function(req, res, next) {
         let incomingEvents = await db.event.getIncomingEvents();
         let pastEvents = await db.event.getPastEvents();
         let ongoingEvents = await db.event.getOngoingEvents();
-        res.render('events', {
+        return res.render('events', {
             incomingEvents: incomingEvents,
             pastEvents: pastEvents,
             ongoingEvents: ongoingEvents
@@ -32,7 +32,7 @@ router.get('/events', async function(req, res, next) {
 
     } catch(err) {
         console.error('Error: [/events]: ' + err);
-        next(err);
+        return next(err);
     }
 });
 
@@ -40,13 +40,13 @@ router.get('/events/ongoing', async function(req, res, next) {
     let user = db.user.getUser(req);
     try {
         let ongoingEvents = await db.event.getOngoingEvents();
-        res.render('ongoing', {
+        return res.render('ongoing', {
             ongoingEvents: ongoingEvents
         });
 
     } catch(err) {
         console.error('Error: [/events/ongoing]: ' + err);
-        next(err);
+        return next(err);
     }
 });
 
@@ -54,13 +54,13 @@ router.get('/events/incoming', async function(req, res, next) {
     let user = db.user.getUser(req);
     try {
         let incomingEvents = await db.event.getIncomingEvents();
-        res.render('incoming', {
+        return res.render('incoming', {
             incomingEvents: incomingEvents
         });
 
     } catch(err) {
         console.error('Error: [/events/incoming]: ' + err);
-        next(err);
+        return next(err);
     }
 });
 
@@ -68,21 +68,19 @@ router.get('/events/past', async function(req, res, next) {
     let user = db.user.getUser(req);
     try {
         let pastEvents = await db.event.getPastEvents();
-        res.render('past', {
+        return res.render('past', {
             pastEvents: pastEvents
         });
 
     } catch(err) {
         console.error('Error: [/events/past]: ' + err);
-        next(err);
+        return next(err);
     }
 });
 
 router.get('/events/:eventSlug', async function(req, res) {
     let event = await db.event.getEventBySlug(req.params.eventSlug);
-    console.log(event);
-    res.render('event', {event: event});
-
+    return res.render('event', {event: event});
 });
 
 router.post('/events/:eventSlug', indexHandler.register);
