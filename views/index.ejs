@@ -1,7 +1,7 @@
 <%- include('./partials/navbar'); %> 
-<div class="main-container">
+<div id="main-container">
 
-    <div id="ongoingEvents" class="container my-5 border border-dark rounded-3 p-4">
+    <div id="ongoingEvents" class="container my-5 border rounded-3 p-4">
         <% if(ongoingEvents){ %>
         <div class="row">
             <div class="col-3 d-flex flex-column justify-content-center">
@@ -33,7 +33,7 @@
         <% } %>
     </div>
 
-    <div id="incomingEvents" class="container my-5 border border-dark rounded-3 p-4">
+    <div id="incomingEvents" class="container my-5 border rounded-3 p-4">
         <% if(incomingEvents){ %>
         <div class="row">
             <div class="col-3 d-flex flex-column justify-content-center">
@@ -65,7 +65,7 @@
         <% } %>
     </div>
 
-    <div id="pastEvents" class="container my-5 border border-dark rounded-3 p-4">
+    <div id="pastEvents" class="container my-5 border rounded-3 p-4">
         <% if(pastEvents){ %>
         <div class="row">
             <div class="col-3 d-flex flex-column justify-content-center">
