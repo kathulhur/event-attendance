@@ -1,6 +1,8 @@
 <%- include('../partials/navbar'); %>
-<div class="container w-50 mt-5 d-flex justify-content-center">
-    <form id="loginForm" class="w-75 m-5" action="/users/login" method="POST">
+<div class="container w-50 my-5 d-flex justify-content-center">
+    
+    <form id="loginForm" class="w-75 p-5 border rounded-3" action="/users/login" method="POST">
+        <h1 class="mb-4">Login</h1>
         <input type="hidden" name="_csrf" value="<%= typeof csrf !== 'undefined' ? csrf : '' %>">
         <%- include('../partials/messages'); %>
         <div class="mb-3 w-100">
