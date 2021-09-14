@@ -1,7 +1,8 @@
 <%- include('../partials/navbar'); %> 
-<div class="container w-50 mt-5 d-flex justify-content-center">
+<div class="container w-50 my-5 d-flex justify-content-center">
 
-    <form id="loginForm" class="w-100 m-5" action="/users/register" method="POST">
+    <form id="loginForm" class="w-75 p-5 border rounded-3" action="/users/register" method="POST">
+        <h1 class="mb-4">Sign up</h1>
         <input type="hidden" name="_csrf" value="{{csrf}}">
         <%- include('../partials/messages'); %>
         <div class="mb-3 w-100">
@@ -19,7 +20,8 @@
             <input class="form-control" id="fieldPassword" name="password" type="password" placeholder="password" value="<%= typeof form !== 'undefined' ? form.password : '' %>">
         </div>
 
-        <button class="btn btn-primary" type="submit">Submit</button>
+        <button class="btn btn-primary mb-3" type="submit">Submit</button>
+        <p class="text-center small">Already have an account? <a href="/users/login">login</a></p>
         
     </form>
 </div>
