@@ -6,13 +6,13 @@ const db = require('../lib/db');
 
 /* GET home page. */
 router.get('/', async function(req, res, next) {
-    let ongoingEvents = await db.event.getOngoingEvents(3);
-    let incomingEvents = await db.event.getIncomingEvents(3);
-    let pastEvents = await db.event.getPastEvents(3);
+    let ongoingEvents = await db.event.getOngoingEvents(1);
+    let upcomingEvents = await db.event.getUpcomingEvents(1);
+    let pastEvents = await db.event.getPastEvents(1);
 
     return res.render('index', { 
         ongoingEvents: ongoingEvents,
-        incomingEvents: incomingEvents,
+        upcomingEvents: upcomingEvents,
         pastEvents: pastEvents
     });
 
@@ -21,11 +21,11 @@ router.get('/', async function(req, res, next) {
 router.get('/events', async function(req, res, next) {
     let user = db.user.getUser(req);
     try {
-        let incomingEvents = await db.event.getIncomingEvents();
+        let upcomingEvents = await db.event.getUpcomingEvents();
         let pastEvents = await db.event.getPastEvents();
         let ongoingEvents = await db.event.getOngoingEvents();
         return res.render('events', {
-            incomingEvents: incomingEvents,
+            upcomingEvents: upcomingEvents,
             pastEvents: pastEvents,
             ongoingEvents: ongoingEvents
         });
@@ -50,16 +50,16 @@ router.get('/events/ongoing', async function(req, res, next) {
     }
 });
 
-router.get('/events/incoming', async function(req, res, next) {
+router.get('/events/upcoming', async function(req, res, next) {
     let user = db.user.getUser(req);
     try {
-        let incomingEvents = await db.event.getIncomingEvents();
-        return res.render('incoming', {
-            incomingEvents: incomingEvents
+        let upcomingEvents = await db.event.getUpcomingEvents();
+        return res.render('upcoming', {
+            upcomingEvents: upcomingEvents
         });
 
     } catch(err) {
-        console.error('Error: [/events/incoming]: ' + err);
+        console.error('Error: [/events/upcoming]: ' + err);
         return next(err);
     }
 });

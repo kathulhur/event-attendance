@@ -6,9 +6,9 @@
 </a>
 <div class="container" id="mainContainer">
 
-    <div class="container my-4 border border-dark rounded-3" id="incomingEvents">
-        <% if (incomingEvents) { %>
-            <h1 class="text-center">Incoming Events</h1>
+    <div class="container my-4 border rounded-3" id="upcomingEvents">
+        <% if (upcomingEvents) { %>
+            <h1 class="text-center">Upcoming Events</h1>
             <hr>
             <table class="table table-hover table-borderless">
                 <thead>
@@ -19,17 +19,17 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% for(let i = 0; i < incomingEvents.length; ++i) { %>
+                    <% for(let i = 0; i < upcomingEvents.length; ++i) { %>
                         <tr>
                             <th class="small"><%= i+1 %></th>
-                            <td class="small"><a class="link-success" href="/events/<%=incomingEvents[i].slug%>"><%= incomingEvents[i].name %></a></td>
-                            <td class="small"><%= incomingEvents[i].start.toDateString() %> : <%= incomingEvents[i].start.toLocaleTimeString() %></td>
+                            <td class="small"><a class="link-success" href="/events/<%=upcomingEvents[i].slug%>"><%= upcomingEvents[i].name %></a></td>
+                            <td class="small"><%= upcomingEvents[i].start.toDateString() %> : <%= upcomingEvents[i].start.toLocaleTimeString() %></td>
                         </tr>
                     <% }; %>
                 </tbody>
             </table>
         <% } else { %>
-            <h3 class="text-center">There are no incoming events</h3>
+            <h3 class="text-center">There are no upcoming events</h3>
         <% } %>
     </div>
     
