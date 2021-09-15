@@ -3,8 +3,8 @@
     <a href="/" class="navbar-brand">Organization Name</a>
     <div class="d-flex">
         <% if(user ? user.isAuthenticated: false) { %>
-            <a href="/users/<%= user.id %>" class="btn btn-outline btn-outline-dark"><%= user.name %></a>
-            <a href="/users/logout" class="btn btn-outline btn-outline-dark mx-4">Logout</a>
+            <a href="/users/<%= user.id %>" class="btn btn-outline btn-outline-light"><%= user.name %></a>
+            <a href="/users/logout" class="btn btn-outline btn-outline-light mx-4">Logout</a>
         <% } else { %>
             <a href="/users/login" class="btn btn-outline text-light">Login</a>
             <a href="/users/register" class="btn btn-outline text-light mx-2">Sign up</a>
