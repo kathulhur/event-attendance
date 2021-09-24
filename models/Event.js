@@ -10,6 +10,10 @@ let EventSchema = new Schema({
         type: String,
         required: true
     },
+    description: {
+        type: String,
+        required: true
+    },
     status: {
         type: String,
         default: 'incoming'

@@ -16,6 +16,44 @@ exports.events = async function(req, res, next) {
     }
 }
 
+exports.ongoing = async function(req, res, next) {
+    try {
+        let ongoingEvents = await db.event.getOngoingEvents();
+        return res.render('admin/ongoing', {
+            ongoingEvents: ongoingEvents,
+        });
+    } catch (err) {
+        console.error(err);
+        return next(err);
+    }
+}
+
+exports.upcoming = async function(req, res, next) {
+    try {
+        let upcomingEvents = await db.event.getUpcomingEvents();
+        return res.render('admin/upcoming', {
+            upcomingEvents: upcomingEvents,
+        });
+    } catch (err) {
+        console.error(err);
+        return next(err);
+    }
+}
+
+exports.past = async function(req, res, next) {
+    try {
+        let pastEvents = await db.event.getPastEvents();
+        return res.render('admin/past', {
+            pastEvents: pastEvents,
+        });
+    } catch (err) {
+        console.error(err);
+        return next(err);
+    }
+}
+
+
+
 exports.eventForm = function(req, res) {
     return res.render('admin/eventCreate');// render event form
 }
@@ -58,10 +96,12 @@ exports.eventEditForm = async function (req, res, next) {
                 id: event.id,
                 slug: event.slug,
                 name: event.name,
+                description: event.description,
                 start: db.toDatetimeLocal(event.start),
                 end: db.toDatetimeLocal(event.end),
                 status: event.status,
             }
+
             return res.render('admin/eventEdit', { event: fEvent });
         } else {// event not found
             next(new Error('Event not found'));

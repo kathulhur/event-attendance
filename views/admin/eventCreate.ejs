@@ -1,14 +1,17 @@
 <%- include('../partials/navbar'); %>
 <a href="/admin/events"></a>
-<form action="/admin/events/create" method="post">
+<form action="/admin/events/create" method="post" id="eventForm">
     <label for="fieldName">Event Name</label>
-    <input id="fieldName" type="text" name="name">
+    <input id="fieldName" type="text" name="name"><br><br>
     
+    <label for="fieldDescription"></label>
+    <textarea name="description" id="fieldDescription" cols="30" rows="10" form="eventForm">Enter short description here</textarea><br><br>
+
     <label for="fieldStart">Start of Event</label>
-    <input id="fieldStart" type="datetime-local" name="start">
+    <input id="fieldStart" type="datetime-local" name="start"><br><br>
     
     <label for="fieldEnd">End of Event</label>
-    <input id="fieldEnd" type="datetime-local" name="end">
+    <input id="fieldEnd" type="datetime-local" name="end"><br><br>
     
     <input type="submit">
 </form>

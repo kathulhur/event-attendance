@@ -1,6 +1,7 @@
 <%- include('../partials/navbar'); %>
 <a href="/admin/events">back</a>
 <h1><%= event.name %> - [<%= event.status %>]</h1>
+<p><%= event.description %></p>
 <p>participants: <%= event.participants %></p>
 <p>START - <%= event.start %></p>
 <p>END - <%= event.end %></p>

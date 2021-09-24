@@ -6,6 +6,10 @@ const adminHandler = require('../handlers/admin');
 router.get('/', adminHandler.index);
 // Events list page
 router.get('/events', adminHandler.events);
+
+router.get('/events/ongoing', adminHandler.ongoing);
+router.get('/events/upcoming', adminHandler.upcoming);
+router.get('/events/past', adminHandler.past);
 // Event form
 router.get('/events/create', adminHandler.eventForm);
 // Submit form

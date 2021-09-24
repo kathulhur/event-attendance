@@ -6,6 +6,10 @@
     <label for="fieldName">Event Name</label>
     <input id="fieldName" type="text" name="name" value="<%= event.name %>">
 
+    <label for="fieldDescription"></label>
+    <% console.log(event.description) %>
+    <textarea name="description" id="fieldDescription" cols="30" rows="10" form="eventEditForm"><%= event.description %></textarea><br><br>
+
     <label for="fieldStatus">Status</label>
     <input id="fieldStatus" type="text" name="status" value="<%= event.status %>">
 
