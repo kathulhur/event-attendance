@@ -1,27 +1,55 @@
 <%- include('../partials/navbar'); %>
-<a href="/admin/events">back</a>
-<h1><%= event.name %> - [<%= event.status %>]</h1>
-<p><%= event.description %></p>
-<p>participants: <%= event.participants %></p>
-<p>START - <%= event.start %></p>
-<p>END - <%= event.end %></p>
-<a href="/admin/events/<%= event.slug %>/edit">Edit</a>
-<button onclick="deleteEvent('<%= event.id %>', '/admin/events')">Delete</button>
-<div id="error-container"></div>
-<ol>
-    <% if(participants) {%>
-        <% participants.forEach(function (participant) { %>
-    <li>
-        <a href="/admin/events/<%= event.slug %>/participants/<%= participant.slug %>"><%= participant.name %></a>
-        <button onclick="deleteParticipant('<%= event.id %>', '<%= participant.id %>', '/admin/events/<%= event.slug %>')">delete</button>
-    </li>
-        <% }); %>
-    <% } else { %>
-        <p>No participants</p>
-    <% }; %>
-</ol>
+<a href="/admin/events">
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="dark" class="bi bi-arrow-return-left mt-3 ms-3" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5z"/>
+    </svg>
+</a>
 
-<a href="/admin/events/<%= event.slug %>/participants/create">Add</a>
+<div class="row m-5">
+
+    <div class="col">
+        <div class="container border rounded-3 p-4">
+            <h2><%= event.name %> - [<%= event.status %>]</h2>
+            <div class="btn-group">
+                <a class="btn btn-sm btn-warning" href="/admin/events/<%= event.slug %>/edit">Edit</a>
+                <button class="btn btn-sm btn-danger" onclick="deleteEvent('<%= event.id %>', '/admin/events')">Delete</button>
+            </div>
+            <br>
+            <p>Registered: <%= event.participants %></p>
+            <p>START - <%= event.start.toDateString() %> : <%= event.end.toTimeString() %></p>
+            <p>END - <%= event.end.toDateString() %> : <%= event.end.toTimeString() %></p>
+            <div class="container-fluid border rounded-3">
+                <p class="card-text"><%= event.description.replace(/\n/g, '\n') %></p>
+            </div>
+            <br>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="container border rounded-3 p-4">
+            <ol>
+                <% if(participants) {%>
+                    <h3 class="text-center">Participants</h3>
+                    <br>
+                    <% participants.forEach(function (participant) { %>
+                <li class="mb-1">
+                    <a href="/admin/events/<%= event.slug %>/participants/<%= participant.slug %>"><%= participant.name %></a>
+                    <a class="btn btn-sm btn-warning" href="/admin/events/<%= event.slug %>/participants/<%= participant.slug %>/edit">Edit</a>
+                    <button class="btn btn-sm btn-danger" onclick="deleteParticipant('<%= event.id %>', '<%= participant.id %>', '/admin/events/<%= event.slug %>')">delete</button>
+                </li>
+                    <% }); %>
+                <% } else { %>
+                    <h2 class="text-center">No participants</h2>
+                <% }; %>
+            </ol>
+            <a class="btn btn-outline-success" href="/admin/events/<%= event.slug %>/participants/create">Add</a>
+        </div>
+    </div>
+
+</div>
+
+<div id="error-container"></div>
+
 
 <script src="/admin/javascripts/event.js"></script>
 <script src="/admin/javascripts/participant.js"></script>

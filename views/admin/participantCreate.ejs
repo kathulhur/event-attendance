@@ -1,20 +1,31 @@
 <%- include('../partials/navbar'); %>
-<a href="/admin/events/<%= event.slug %>">back</a>
-<form action="/admin/events/<%= event.slug %>/participants/create" method="post">
+<a href="/admin/events/<%= event.slug %>">
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="dark" class="bi bi-arrow-return-left mt-3 ms-3" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5z"/>
+    </svg>
+</a>
+<div id="main-container" class="mb-5">
 
-    <input type="hidden" name="event" value="<%= event.id %>">
+    <div id="form-container" class="container w-50 border rounded-3 p-5">
+        <h2>Participant Registration</h2><br>
+        <form class="" action="/admin/events/<%= event.slug %>/participants/create" method="post">
+            <input type="hidden" name="event" value="<%= event.id %>">
+        
+            <label class="form-label" for="fieldName">Name</label>
+            <input class="form-control" id="fieldName" type="text" name="name"><br>
+        
+            <label class="form-label" for="fieldAge">Age</label>
+            <input class="form-control" id="fieldAge" type="number" name="age"><br>
+        
+            <label class="form-label"for="fieldCourse">Course</label>
+            <input class="form-control"id="fieldCourse" type="text" name="course"><br>
+        
+            <label class="form-label" for="fieldInstitution">Institution</label>
+            <input class="form-control" id="fieldInstitution" type="text" name="institution"><br>
+        
+            <input class="btn btn-outline-success" type="submit">
+        </form>
 
-    <label for="fieldName">Name</label>
-    <input id="fieldName" type="text" name="name">
+    </div>
 
-    <label for="fieldAge">Age</label>
-    <input id="fieldAge" type="number" name="age">
-
-    <label for="fieldCourse">Course</label>
-    <input id="fieldCourse" type="text" name="course">
-
-    <label for="fieldInstitution">Institution</label>
-    <input id="fieldInstitution" type="text" name="institution">
-
-    <input type="submit">
-</form>
+</div>

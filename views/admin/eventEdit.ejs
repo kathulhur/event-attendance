@@ -1,25 +1,38 @@
 <%- include('../partials/navbar'); %>
-<a href="/admin/events">back</a>
-<form id="eventEditForm" onsubmit="editEvent(event)">
-    <input name="id" type="hidden" value="<%= event.id %>">
+<a href="/admin/events/<%= event.slug %>">
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="dark" class="bi bi-arrow-return-left mt-3 ms-3" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5z"/>
+    </svg>
+</a>
 
-    <label for="fieldName">Event Name</label>
-    <input id="fieldName" type="text" name="name" value="<%= event.name %>">
+<div id="main-container" class="mb-5">
 
-    <label for="fieldDescription"></label>
-    <% console.log(event.description) %>
-    <textarea name="description" id="fieldDescription" cols="30" rows="10" form="eventEditForm"><%= event.description %></textarea><br><br>
+    <div id="form-container" class="container w-50 border rounded-3 p-5">
 
-    <label for="fieldStatus">Status</label>
-    <input id="fieldStatus" type="text" name="status" value="<%= event.status %>">
+        <form id="eventEditForm" onsubmit="editEvent(event)">
+            <h1>Event Edit</h1><br>
+            <input name="id" type="hidden" value="<%= event.id %>">
+        
+            <label for="fieldName">Event Name</label>
+            <input class="form-control" id="fieldName" type="text" name="name" value="<%= event.name %>"><br><br>
+        
+            <label for="fieldDescription"></label>
+            <textarea class="form-control" name="description" id="fieldDescription" cols="30" rows="10" form="eventEditForm"><%= event.description %></textarea><br><br>
+        
+            <label for="fieldStatus">Status</label>
+            <input class="form-control" id="fieldStatus" type="text" name="status" value="<%= event.status %>"><br><br>
+        
+            <label for="fieldStart">Start of Event</label>
+            <input class="form-control" id="fieldStart" type="datetime-local" name="start" value="<%= event.start %>"><br><br>
+            
+            <label for="fieldEnd">End of Event</label>
+            <input class="form-control" id="fieldEnd" type="datetime-local" name="end" value="<%= event.end %>"><br><br>
+            
+            <input class="btn btn-outline-success" type="submit">
+        </form>
 
-    <label for="fieldStart">Start of Event</label>
-    <input id="fieldStart" type="datetime-local" name="start" value="<%= event.start %>">
-    
-    <label for="fieldEnd">End of Event</label>
-    <input id="fieldEnd" type="datetime-local" name="end" value="<%= event.end %>">
-    
-    <input type="submit">
-</form>
+    </div>
+
+</div>
 
 <script src="/admin/javascripts/event.js"></script>

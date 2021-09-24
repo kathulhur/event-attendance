@@ -1,11 +1,27 @@
 <%- include('../partials/navbar'); %>
-<a href="/admin/events/<%= participant.event.slug %>">back</a>
-<h1>EventId - [<%= participant.event.id %>]</h1>
-<h2><%= participant.name %>[<%= participant.age %>]</h1>
-<p><%= participant.course %> - <%= participant.institution %></p>
-<p>registered: <%= participant.registered %></p>
+<a href="/admin/events/<%= participant.event.slug %>">
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="dark" class="bi bi-arrow-return-left mt-3 ms-3" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5z"/>
+    </svg>
+</a>
 
-<a href="/admin/events/<%= participant.event.slug %>/participants/<%= participant.slug %>/edit">Edit</a>
-<button onclick="deleteParticipant('<%= participant.event.id %>', '<%= participant.id %>', '/admin/events/<%= participant.event.slug %>')">Delete</button>
+<div id="main-container">
+
+    <div id="participant-container" class="d-flex justify-content-center">
+
+        <div class="container border rounded-3 p-5">
+            <h1><%= participant.name %> [<%= participant.age %>]</h1>
+            <p><b>Event: </b><small><%= participant.event.name %> - [<%= participant.event.id %>]</small></p>
+            <p><b>Course:</b> <%= participant.course %></p>
+            <p><b>Institution: </b> <%= participant.institution %></p>
+            <p><b>Date Registered:</b> <%= participant.registered %></p>
+            
+            <a class="btn btn-sm btn-warning" href="/admin/events/<%= participant.event.slug %>/participants/<%= participant.slug %>/edit">Edit</a>
+            <button class="btn btn-sm btn-danger" onclick="deleteParticipant('<%= participant.event.id %>', '<%= participant.id %>', '/admin/events/<%= participant.event.slug %>')">Delete</button>
+        </div>
+
+    </div>
+
+</div>
 
 <script src="/admin/javascripts/participant.js"></script>

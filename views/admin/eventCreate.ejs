@@ -1,17 +1,29 @@
 <%- include('../partials/navbar'); %>
-<a href="/admin/events"></a>
-<form action="/admin/events/create" method="post" id="eventForm">
-    <label for="fieldName">Event Name</label>
-    <input id="fieldName" type="text" name="name"><br><br>
-    
-    <label for="fieldDescription"></label>
-    <textarea name="description" id="fieldDescription" cols="30" rows="10" form="eventForm">Enter short description here</textarea><br><br>
+<a href="/admin/events">
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="dark" class="bi bi-arrow-return-left mt-3 ms-3" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5z"/>
+    </svg>
+</a>
 
-    <label for="fieldStart">Start of Event</label>
-    <input id="fieldStart" type="datetime-local" name="start"><br><br>
-    
-    <label for="fieldEnd">End of Event</label>
-    <input id="fieldEnd" type="datetime-local" name="end"><br><br>
-    
-    <input type="submit">
-</form>
+<div id="main-container" class="mb-5">
+
+    <div id="form-container" class="container w-50 border rounded-3 p-5">
+        <h2>Event Creation</h2><br>
+        <form class="" action="/admin/events/create" method="post" id="eventForm">
+            <label class="form-label" for="fieldName">Event Name</label>
+            <input class="form-control" id="fieldName" type="text" name="name"><br>
+            
+            <label class="form-label" for="fieldDescription"></label>
+            <textarea class="form-control" name="description" id="fieldDescription" cols="30" rows="10" form="eventForm">Enter description here</textarea><br>
+        
+            <label class="form-label" for="fieldStart">Start of Event</label>
+            <input class="form-control" id="fieldStart" type="datetime-local" name="start"><br>
+            
+            <label class="form-label" for="fieldEnd">End of Event</label>
+            <input class="form-control" id="fieldEnd" type="datetime-local" name="end"><br>
+            
+            <input class="btn btn-outline-success" type="submit">
+        </form>
+    </div>
+
+</div>
